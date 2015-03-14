@@ -17,7 +17,11 @@
 
 #include "ongetpass.h"
 
+int wrap_x2go_main (int argc, char **argv) {
+  return (x2goMain (argc, argv));
+}
+
 int main(int argc, char *argv[])
 {
-	return x2goMain(argc,argv);
+	return (wrap_x2go_main (argc, argv));
 }

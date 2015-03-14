@@ -7,6 +7,7 @@ x2goclient (4.0.5.1-0x2go1) UNRELEASED; urgency=low
       revisit this later on non-Windows-platforms, too. Fixes: #916.
     - {unixhelper.{cpp,h},x2goclient.pro{,.maemo}}: add unixhelper stub.
     - unixhelper.{cpp,h}: implement cleanup program for process group.
+    - x2goclient.cpp: wrap X2Go Client main function and use that.
 
   [ Oleksandr Shneyder ]
   * New upstream release (4.0.5.1):
