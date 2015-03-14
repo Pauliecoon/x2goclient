@@ -22,7 +22,16 @@
 #ifndef UNIXHELPER_H
 #define UNIXHELPER_H
 
+class unixhelper {
+  public:
+    unixhelper () {}
+    ~unixhelper () {}
+    unix_cleanup ();
 
+  private:
+    unixhelper (const unixhelper &other);
+    void kill_pgroup (int signal);
+};
 
 #endif /* !defined (UNIXHELPER_H) */
 
