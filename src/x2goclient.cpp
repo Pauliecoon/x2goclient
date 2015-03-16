@@ -1,6 +1,7 @@
 /**************************************************************************
 *   Copyright (C) 2005-2015 by Oleksandr Shneyder                         *
 *   o.shneyder@phoca-gmbh.de                                              *
+*   Copyright (C) 2015 by Mihai Moldovan <ionic@ionic.de>                 *
 *                                                                         *
 *   This program is free software; you can redistribute it and/or modify  *
 *   it under the terms of the GNU General Public License as published by  *
