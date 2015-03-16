@@ -17,10 +17,13 @@
  *  59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.              *
  ***************************************************************************/
 
-#ifdef Q_OS_UNIX
 
 #ifndef UNIXHELPER_H
 #define UNIXHELPER_H
+
+#include <QtCore/qglobal.h>
+
+#ifdef Q_OS_UNIX
 
 class unixhelper {
   public:
@@ -33,6 +36,6 @@ class unixhelper {
     void kill_pgroup (int signal);
 };
 
-#endif /* !defined (UNIXHELPER_H) */
-
 #endif /* defined (Q_OS_UNIX) */
+
+#endif /* !defined (UNIXHELPER_H) */

@@ -18,6 +18,8 @@ x2goclient (4.0.5.1-0x2go1) UNRELEASED; urgency=low
     - x2goclient.cpp: add legacy <sys/types.h> header needed for old operating
       systems.
     - x2goclient.cpp: fix std::edit -> std::exit typo.
+    - unixhelper.{h,cpp}: also include <QtCore/qglobal.h> to have Q_OS_UNIX
+      defined on UNIX-based platforms. Move guards around.
 
   [ Oleksandr Shneyder ]
   * New upstream release (4.0.5.1):

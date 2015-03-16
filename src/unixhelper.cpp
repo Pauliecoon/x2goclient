@@ -17,6 +17,10 @@
  *  59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.              *
  ***************************************************************************/
 
+/* Necessary for Q_OS_UNIX! */
+
+#include "unixhelper.h"
+
 #ifdef Q_OS_UNIX
 
 #include <csignal>
@@ -26,7 +30,6 @@
 #include <cerrno>
 #include <cstdlib>
 
-#include "unixhelper.h"
 
 void unixhelper::kill_pgroup (int signal) {
   if (SIGHUP == signal) {
