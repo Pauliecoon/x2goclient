@@ -82,7 +82,7 @@ int main (int argc, char **argv) {
       std::cerr << "Error while forking: " << std::strerror (errno) << std::endl;
       std::cerr << "Terminating. Please report a bug, refer to this documentation: http://wiki.x2go.org/doku.php/wiki:bugs" << std::endl;
 
-      std::edit (EXIT_FAILURE);
+      std::exit (EXIT_FAILURE);
     }
     /* Parent. Just die here. */
     else {

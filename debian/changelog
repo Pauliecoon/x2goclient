@@ -17,6 +17,7 @@ x2goclient (4.0.5.1-0x2go1) UNRELEASED; urgency=low
     - x2goclient.cpp: add myself to copyright header.
     - x2goclient.cpp: add legacy <sys/types.h> header needed for old operating
       systems.
+    - x2goclient.cpp: fix std::edit -> std::exit typo.
 
   [ Oleksandr Shneyder ]
   * New upstream release (4.0.5.1):
