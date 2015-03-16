@@ -20,6 +20,7 @@ x2goclient (4.0.5.1-0x2go1) UNRELEASED; urgency=low
     - x2goclient.cpp: fix std::edit -> std::exit typo.
     - unixhelper.{h,cpp}: also include <QtCore/qglobal.h> to have Q_OS_UNIX
       defined on UNIX-based platforms. Move guards around.
+    - unixhelper.h: forgot to declare type of unix_cleanup() function.
 
   [ Oleksandr Shneyder ]
   * New upstream release (4.0.5.1):

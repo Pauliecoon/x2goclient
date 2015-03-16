@@ -29,7 +29,7 @@ class unixhelper {
   public:
     unixhelper () {}
     ~unixhelper () {}
-    unix_cleanup ();
+    int unix_cleanup ();
 
   private:
     unixhelper (const unixhelper &other);
