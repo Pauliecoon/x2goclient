@@ -30,34 +30,35 @@
 #include <cerrno>
 #include <cstdlib>
 
+namespace unixhelper {
+  void kill_pgroup (int signal) {
+    if (SIGHUP == signal) {
+      /* Try to kill via SIGTERM first. */
+      if (0 != killpg (getpgrp (), SIGTERM)) {
+        std::cerr << "WARNING: unable to send SIGTERM to process group: " << std::strerror (errno) << std::endl;
+      }
 
-void unixhelper::kill_pgroup (int signal) {
-  if (SIGHUP == signal) {
-    /* Try to kill via SIGTERM first. */
-    if (0 != killpg (getpgrp (), SIGTERM)) {
-      std::cerr << "WARNING: unable to send SIGTERM to process group: " << std::strerror (errno) << std::endl;
+      /* Grant a grace period of (at least) 5 seconds. */
+      sleep (5);
+
+      /* Don't handle any errors here, because we die anyway. */
+      killpg (getpgrp (), SIGKILL);
+    }
+  }
+
+
+  int unix_cleanup () {
+    if (SIG_ERR == std::signal (SIGTERM, SIG_IGN)) {
+      std::cerr << "Unable to ignore SIGTERM: " << std::strerror (errno) << std::endl;
+      std::exit (1);
     }
 
-    /* Grant a grace period of (at least) 5 seconds. */
-    sleep (5);
+    std::signal (SIGHUP, kill_pgroup);
 
-    /* Don't handle any errors here, because we die anyway. */
-    killpg (getpgrp (), SIGKILL);
-  }
-}
-
-
-int unixhelper::unix_cleanup () {
-  if (SIG_ERR == std::signal (SIGTERM, SIG_IGN)) {
-    std::cerr << "Unable to ignore SIGTERM: " << std::strerror (errno) << std::endl;
-    std::exit (1);
-  }
-
-  std::signal (SIGHUP, kill_pgroup);
-
-  /* Sleep forever... at least one second in each run. */
-  for (;;) {
-    sleep (1);
+    /* Sleep forever... at least one second in each run. */
+    for (;;) {
+      sleep (1);
+    }
   }
 }
 

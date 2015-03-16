@@ -38,8 +38,7 @@ int fork_helper (int argc, char **argv) {
   /* Child. */
   if (0 == tmp_pid) {
     /* Starting unixhelper. */
-    unixhelper cleanup_helper ();
-    cleanup_helper.unix_cleanup ();
+    unixhelper::unix_cleanup ();
   }
   /* Error. */
   else if (-1 == tmp_pid) {

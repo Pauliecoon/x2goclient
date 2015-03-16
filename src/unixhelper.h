@@ -25,16 +25,10 @@
 
 #ifdef Q_OS_UNIX
 
-class unixhelper {
-  public:
-    unixhelper () {}
-    ~unixhelper () {}
-    int unix_cleanup ();
-
-  private:
-    unixhelper (const unixhelper &other);
-    void kill_pgroup (int signal);
-};
+namespace unixhelper {
+  int unix_cleanup ();
+  void kill_pgroup (int signal);
+}
 
 #endif /* defined (Q_OS_UNIX) */
 
