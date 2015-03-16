@@ -15,11 +15,44 @@
 *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
 ***************************************************************************/
 
+#include <iostream>
+#include <unistd.h>
+#include <cstring>
+#include <cerrno>
+#include <cstdlib>
+
+#include "unixhelper.h"
 #include "ongetpass.h"
 
 int wrap_x2go_main (int argc, char **argv) {
   return (x2goMain (argc, argv));
 }
+
+#ifdef Q_OS_UNIX
+int fork_helper (int argc, char **argv) {
+  /* Fork off to start helper process. */
+  pid_t tmp_pid = fork ();
+
+  /* Child. */
+  if (0 == tmp_pid) {
+    /* Starting unixhelper. */
+    unixhelper cleanup_helper ();
+    cleanup_helper.unix_cleanup ();
+  }
+  /* Error. */
+  else if (-1 == tmp_pid) {
+    std::cerr << "Unable to create a new process for the UNIX cleanup watchdog: " << std::strerror (errno) << "\n";
+    std::cerr << "Terminating. Please report a bug, refer to this documentation: http://wiki.x2go.org/doku.php/wiki:bugs" << std::endl;
+
+    std::exit (EXIT_FAILURE);
+  }
+  /* Parent. */
+  else {
+    /* Start real X2Go Client. */
+    return (wrap_x2go_main (argc, argv));
+  }
+}
+#endif /* defined (Q_OS_UNIX) */
 
 int main(int argc, char *argv[])
 {

@@ -8,6 +8,8 @@ x2goclient (4.0.5.1-0x2go1) UNRELEASED; urgency=low
     - {unixhelper.{cpp,h},x2goclient.pro{,.maemo}}: add unixhelper stub.
     - unixhelper.{cpp,h}: implement cleanup program for process group.
     - x2goclient.cpp: wrap X2Go Client main function and use that.
+    - x2goclient.cpp: add fork_helper() function to start up the UNIX cleanup
+      helper.
 
   [ Oleksandr Shneyder ]
   * New upstream release (4.0.5.1):
