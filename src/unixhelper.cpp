@@ -69,15 +69,34 @@ namespace unixhelper {
       /* Anything here shall be unreachable. */
     }
 
-    /* Set up signal handler to ignore SIGTERM. */
-    if (SIG_ERR == std::signal (SIGTERM, SIG_IGN)) {
-      std::cerr << "Unable to ignore SIGTERM: " << std::strerror (errno) << std::endl;
-      std::exit (1);
+    {
+      struct sigaction sig_action;
+      sig_action.sa_handler = SIG_IGN;
+      sig_action.sa_mask = empty_set;
+      sig_action.sa_flags = SA_RESTART;
 
-      /* Anything here shall be unreachable. */
+      /* Set up signal handler to ignore SIGTERM. */
+      if (0 != sigaction (SIGTERM, &sig_action, NULL)) {
+        std::cerr << "Unable to ignore SIGTERM: " << std::strerror (errno) << std::endl;
+        kill_pgroup (-1);
+
+        /* Anything here shall be unreachable. */
+      }
     }
 
-    std::signal (SIGHUP, kill_pgroup);
+    {
+      struct sigaction sig_action;
+      sig_action.sa_handler = kill_pgroup;
+      sig_action.sa_mask = empty_set;
+      sig_action.sa_flags = SA_RESTART;
+
+      if (0 != sigaction (SIGHUP, &sig_action, NULL)) {
+        std::cerr << "Unable to set up signal handler for SIGHUP: " << std::strerror (errno) << std::endl;
+        kill_pgroup (-1);
+
+        /* Anything here shall be unreachable. */
+      }
+    }
 
     /* Sleep forever... at least one second in each run. */
     for (;;) {
