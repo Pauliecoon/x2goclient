@@ -38,7 +38,7 @@ int fork_helper (int argc, char **argv) {
   /* Child. */
   if (0 == tmp_pid) {
     /* Starting unixhelper. */
-    unixhelper::unix_cleanup ();
+    return (unixhelper::unix_cleanup ());
 
     /* Anything here shall be unreachable. */
   }
