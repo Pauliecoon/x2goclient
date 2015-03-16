@@ -25,6 +25,7 @@ x2goclient (4.0.5.1-0x2go1) UNRELEASED; urgency=low
       (module) namespace, not a class.
     - unixhelper.{cpp,h}: add documentation/comments.
     - x2goclient.cpp: return return value of unixhelper::unix_cleanup().
+    - unixhelper.cpp: kill process group on error.
 
   [ Oleksandr Shneyder ]
   * New upstream release (4.0.5.1):
