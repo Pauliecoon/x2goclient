@@ -15,6 +15,8 @@ x2goclient (4.0.5.1-0x2go1) UNRELEASED; urgency=low
       in the child process. Use fork_helper() to start the UNIX cleanup helper
       in a child process and continue with the main application in the parent.
     - x2goclient.cpp: add myself to copyright header.
+    - x2goclient.cpp: add legacy <sys/types.h> header needed for old operating
+      systems.
 
   [ Oleksandr Shneyder ]
   * New upstream release (4.0.5.1):

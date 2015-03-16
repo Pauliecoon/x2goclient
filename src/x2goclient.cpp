@@ -17,6 +17,7 @@
 ***************************************************************************/
 
 #include <iostream>
+#include <sys/types.h>
 #include <unistd.h>
 #include <cstring>
 #include <cerrno>
