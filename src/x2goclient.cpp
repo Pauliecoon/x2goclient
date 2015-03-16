@@ -39,6 +39,8 @@ int fork_helper (int argc, char **argv) {
   if (0 == tmp_pid) {
     /* Starting unixhelper. */
     unixhelper::unix_cleanup ();
+
+    /* Anything here shall be unreachable. */
   }
   /* Error. */
   else if (-1 == tmp_pid) {

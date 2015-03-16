@@ -30,6 +30,8 @@
 #include <cerrno>
 #include <cstdlib>
 
+/* For documentation please see unixhelper.h. */
+
 namespace unixhelper {
   void kill_pgroup (int signal) {
     if (SIGHUP == signal) {
@@ -51,6 +53,8 @@ namespace unixhelper {
     if (SIG_ERR == std::signal (SIGTERM, SIG_IGN)) {
       std::cerr << "Unable to ignore SIGTERM: " << std::strerror (errno) << std::endl;
       std::exit (1);
+
+      /* Anything here shall be unreachable. */
     }
 
     std::signal (SIGHUP, kill_pgroup);

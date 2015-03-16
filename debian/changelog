@@ -23,6 +23,7 @@ x2goclient (4.0.5.1-0x2go1) UNRELEASED; urgency=low
     - unixhelper.h: forgot to declare type of unix_cleanup() function.
     - {unixhelper.{cpp,h},x2goclient.cpp}: unixhelper should really be a
       (module) namespace, not a class.
+    - unixhelper.{cpp,h}: add documentation/comments.
 
   [ Oleksandr Shneyder ]
   * New upstream release (4.0.5.1):
