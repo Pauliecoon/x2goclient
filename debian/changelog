@@ -29,6 +29,10 @@ x2goclient (4.0.5.1-0x2go1) UNRELEASED; urgency=low
     - unixhelper.{cpp,h}: implement signal unblocking in
       unixhelper::unix_cleanup(). Update documentation.
     - unixhelper.cpp: port from std::signal() to sigaction(). Handle errors.
+    - x2goclient.cpp: clean up. We don't care if setsid() fails or succeeds
+      and we certainly do not need to fork to force it to succeed. Whether we
+      are a process group leader already or become one doesn't matter, if the
+      end result is that we are process group leader.
 
   [ Oleksandr Shneyder ]
   * New upstream release (4.0.5.1):
