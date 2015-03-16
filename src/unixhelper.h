@@ -27,12 +27,12 @@
 
 namespace unixhelper {
   /*
-   * TODO: Unblocks all signals and
-   * installs a signal handler for SIGHUP, which calls kill_pgroup.
+   * Unblocks all signals and installs a signal handler for SIGHUP,
+   * which calls kill_pgroup.
    *
-   * TODO: Should signal unblocking or
-   * installing the signal handler fail, an emergency exit is performed
-   * and the whole process group killed.
+   * Should signal unblocking or installing the signal handler fail,
+   * an emergency exit is performed and
+   * the whole process group killed.
    *
    * Loops indefinitely afterwards.
    */

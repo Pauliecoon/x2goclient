@@ -50,6 +50,26 @@ namespace unixhelper {
 
 
   int unix_cleanup () {
+    /*
+     * Unblock all signals first.
+     * Signal blocks are inherited, so you never you what is currently set.
+     */
+    sigset_t empty_set;
+    if (0 != sigemptyset (&empty_set)) {
+      std::cerr << "Unable to fetch empty signal set: " << std::strerror (errno) << std::endl;
+      kill_pgroup (-1);
+
+      /* Anything here shall be unreachable. */
+    }
+
+    if (0 != sigprocmask (SIG_SETMASK, &empty_set, NULL)) {
+      std::cerr << "Unable to set empty signal set: " << std::strerror (errno) << std::endl;
+      kill_pgroup (-1);
+
+      /* Anything here shall be unreachable. */
+    }
+
+    /* Set up signal handler to ignore SIGTERM. */
     if (SIG_ERR == std::signal (SIGTERM, SIG_IGN)) {
       std::cerr << "Unable to ignore SIGTERM: " << std::strerror (errno) << std::endl;
       std::exit (1);
