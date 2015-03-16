@@ -10,6 +10,10 @@ x2goclient (4.0.5.1-0x2go1) UNRELEASED; urgency=low
     - x2goclient.cpp: wrap X2Go Client main function and use that.
     - x2goclient.cpp: add fork_helper() function to start up the UNIX cleanup
       helper.
+    - x2goclient.cpp: use setsid() on UNIX to become session and process group
+      leader. If that fails, fork, terminate the parent and execute setsid()
+      in the child process. Use fork_helper() to start the UNIX cleanup helper
+      in a child process and continue with the main application in the parent.
 
   [ Oleksandr Shneyder ]
   * New upstream release (4.0.5.1):

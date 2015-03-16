@@ -54,7 +54,44 @@ int fork_helper (int argc, char **argv) {
 }
 #endif /* defined (Q_OS_UNIX) */
 
-int main(int argc, char *argv[])
-{
-	return (wrap_x2go_main (argc, argv));
+int main (int argc, char **argv) {
+#ifdef Q_OS_UNIX
+  if (-1 == setsid ()) {
+    std::cerr << "Unable to create a new process session: " << std::strerror (errno) << "\n";
+
+    std::cerr << "Trying to fork." << std::endl;
+    pid_t tmp_pid = fork ();
+
+    /* Child. */
+    if (0 == tmp_pid) {
+        /* Trying to get a new session and become session + process group leader again. */
+        if (-1 == setsid ()) {
+          std::cerr << "Child was unable to create a new process session: " << std::strerror (errno) << "\n";
+          std::cerr << "Terminating. Please report a bug, refer to this documentation: http://wiki.x2go.org/doku.php/wiki:bugs" << std::endl;
+
+          std::exit (EXIT_FAILURE);
+        }
+
+        /* By now, we should be session and group leader. */
+        return (fork_helper (argc, argv));
+    }
+    /* Error. */
+    else if (-1 == tmp_pid) {
+      std::cerr << "Error while forking: " << std::strerror (errno) << std::endl;
+      std::cerr << "Terminating. Please report a bug, refer to this documentation: http://wiki.x2go.org/doku.php/wiki:bugs" << std::endl;
+
+      std::edit (EXIT_FAILURE);
+    }
+    /* Parent. Just die here. */
+    else {
+      std::exit (EXIT_SUCCESS);
+    }
+  }
+  else {
+    /* setsid() worked. Starting helper and main program. */
+    return (fork_helper (argc, argv));
+  }
+#else /* defined (Q_OS_UNIX) */
+  return (wrap_x2go_main (argc, argv));
+#endif /* defined (Q_OS_UNIX) */
 }
