@@ -101,7 +101,7 @@ int main (int argc, char **argv) {
     /* Make the current argument lowercase. */
     std::transform (cur_arg.begin (), cur_arg.end (), cur_arg.begin (), ::tolower);
 
-    if ((!cur_arg.empty ()) && (cur_arg.compare ("--unixhelper"))) {
+    if ((!cur_arg.empty ()) && (cur_arg.compare ("--unixhelper") == 0)) {
       unix_helper_request = 1;
       break;
     }
