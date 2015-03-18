@@ -43,6 +43,8 @@ x2goclient (4.0.5.1-0x2go1) UNRELEASED; urgency=low
     - x2goclient.cpp: create new argv array on the heap instead of on the
       stack. Stack data will be invalid once the function goes out of scope
       (which is what execv is doing.)
+    - unixhelper.{cpp,h}: raise sleeping time to two seconds and grace period
+      to 10 seconds.
 
   [ Oleksandr Shneyder ]
   * New upstream release (4.0.5.1):

@@ -40,8 +40,8 @@ namespace unixhelper {
         std::cerr << "WARNING: unable to send SIGTERM to process group: " << std::strerror (errno) << std::endl;
       }
 
-      /* Grant a grace period of (at least) 5 seconds. */
-      sleep (5);
+      /* Grant a grace period of (at least) 10 seconds. */
+      sleep (10);
 
       /* Don't handle any errors here, because we die anyway. */
       killpg (getpgrp (), SIGKILL);
@@ -98,9 +98,9 @@ namespace unixhelper {
       }
     }
 
-    /* Sleep forever... at least one second in each run. */
+    /* Sleep forever... at least two seconds in each run. */
     for (;;) {
-      sleep (1);
+      sleep (2);
     }
   }
 }

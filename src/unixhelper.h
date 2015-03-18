@@ -28,7 +28,7 @@
 namespace unixhelper {
   /*
    * Unblocks all signals and installs a signal handler for SIGHUP,
-   * which calls kill_pgroup.
+   * which calls kill_pgroup().
    *
    * Should signal unblocking or installing the signal handler fail,
    * an emergency exit is performed and
@@ -41,7 +41,7 @@ namespace unixhelper {
   /*
    * Kills the whole process group.
    * First, SIGTERM is sent to the group.
-   * A 5 seconds grace period is granted to make sure
+   * A 10 seconds grace period is granted to make sure
    * processes exit cleanly on their own.
    * Lastly, SIGKILL is sent to the group -- which also
    * implies the demise of this program.
