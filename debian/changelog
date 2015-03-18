@@ -47,6 +47,8 @@ x2goclient (4.0.5.1-0x2go1) UNRELEASED; urgency=low
       to 10 seconds.
     - {unixhelper.{cpp,h},x2goclient.cpp}: switch main cleanup handling to
       parent PID polling.
+    - unixhelper.{cpp,h}: ignore SIGINT, SIGTERM, SIGPIPE, SIGQUIT, SIGUSR1
+      and SIGUSR2.
 
   [ Oleksandr Shneyder ]
   * New upstream release (4.0.5.1):

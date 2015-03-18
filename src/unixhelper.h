@@ -35,6 +35,9 @@ namespace unixhelper {
    * an emergency exit is performed and
    * the whole process group killed.
    *
+   * The signals SIGINT, SIGTERM, SIGPIPE, SIGQUIT, SIGUSR1 and
+   * SIGUSR2 are ignored.
+   *
    * Loops indefinitely afterwards.
    *
    * In this loop, the current parent PID is polled and compared against

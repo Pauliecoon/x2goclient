@@ -28,7 +28,7 @@
 #include <iostream>
 #include <cstring>
 #include <cerrno>
-#include <cstdlib>
+#include <vector>
 
 /* For documentation please see unixhelper.h. */
 
@@ -69,15 +69,23 @@ namespace unixhelper {
       /* Anything here shall be unreachable. */
     }
 
-    {
+    std::vector<int> ignore_signals;
+    ignore_signals.push_back (SIGINT);
+    ignore_signals.push_back (SIGTERM);
+    ignore_signals.push_back (SIGPIPE);
+    ignore_signals.push_back (SIGQUIT);
+    ignore_signals.push_back (SIGUSR1);
+    ignore_signals.push_back (SIGUSR2);
+
+    for (std::vector<int>::iterator it = ignore_signals.begin (); it != ignore_signals.end (); ++it) {
       struct sigaction sig_action;
       sig_action.sa_handler = SIG_IGN;
       sig_action.sa_mask = empty_set;
       sig_action.sa_flags = SA_RESTART;
 
-      /* Set up signal handler to ignore SIGTERM. */
-      if (0 != sigaction (SIGTERM, &sig_action, NULL)) {
-        std::cerr << "Unable to ignore SIGTERM: " << std::strerror (errno) << std::endl;
+      /* Set up signal handler to ignore the current signal. */
+      if (0 != sigaction (*it, &sig_action, NULL)) {
+        std::cerr << "Unable to ignore signal " << strsignal (*it) << ": " << std::strerror (errno) << std::endl;
         kill_pgroup (-1);
 
         /* Anything here shall be unreachable. */
