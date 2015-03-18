@@ -26,6 +26,7 @@
 #include <algorithm>
 #include <cctype>
 #include <vector>
+#include <csignal>
 
 #include "unixhelper.h"
 #include "ongetpass.h"
@@ -43,16 +44,23 @@ int fork_helper (int argc, char **argv) {
   if (0 == tmp_pid) {
     /* Starting unixhelper. */
     std::vector<std::string> new_argv;
-    new_argv.push (std::string (argv[0]));
-    new_argv.push ("--unixhelper");
+    new_argv.push_back (std::string (argv[0]));
+    new_argv.push_back ("--unixhelper");
 
-    std::vector<const char *> new_argv_c_str;
-    for (const_iterator it = new_argv.begin (); it != new_argv.end (); ++it) {
-      new_argv_c_str.push ((*it).c_str ());
+    std::vector<char *> new_argv_c_str;
+    for (std::vector<std::string>::iterator it = new_argv.begin (); it != new_argv.end (); ++it) {
+      const char *elem = (*it).c_str ();
+      new_argv_c_str.push_back (strndup (elem, std::strlen (elem)));
     }
-    new_argv_c_str.push ("");
 
-    if (0 != execv (new_argv_c_str.data (), new_argv_c_str.data ())) {
+    /* Add null pointer as last element. */
+    {
+      std::vector<char> tmp;
+      tmp.push_back (0);
+      new_argv_c_str.push_back (&tmp.front ());
+    }
+
+    if (0 != execv (new_argv_c_str.front (), &(new_argv_c_str.front ()))) {
       std::cerr << "Failed to re-execute process as UNIX cleanup helper tool: " << std::strerror (errno) << "\n"
                 << "Terminating and killing parent." << "\n"
                 << "Please report a bug, refer to this documentation: http://wiki.x2go.org/doku.php/wiki:bugs" << std::endl;
@@ -66,6 +74,7 @@ int fork_helper (int argc, char **argv) {
     }
 
     /* Anything here shall be unreachable. */
+    return (0);
   }
   /* Error. */
   else if (-1 == tmp_pid) {
@@ -90,7 +99,7 @@ int main (int argc, char **argv) {
     std::string cur_arg (argv[i]);
 
     /* Make the current argument lowercase. */
-    std::transform (cur_arg.begin (), cur_arg.end (), cur_arg.begin (), std::tolower);
+    std::transform (cur_arg.begin (), cur_arg.end (), cur_arg.begin (), ::tolower);
 
     if ((!cur_arg.empty ()) && (cur_arg.compare ("--unixhelper"))) {
       unix_helper_request = 1;
