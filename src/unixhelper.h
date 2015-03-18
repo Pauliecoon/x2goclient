@@ -22,6 +22,7 @@
 #define UNIXHELPER_H
 
 #include <QtCore/qglobal.h>
+#include <unistd.h>
 
 #ifdef Q_OS_UNIX
 
@@ -35,8 +36,12 @@ namespace unixhelper {
    * the whole process group killed.
    *
    * Loops indefinitely afterwards.
+   *
+   * In this loop, the current parent PID is polled and compared against
+   * the original value passed via parameter parent.
+   * Should they mismatch, the parent died and kill_pgroup() is called.
    */
-  int unix_cleanup ();
+  int unix_cleanup (const pid_t parent);
 
   /*
    * Kills the whole process group.
@@ -49,7 +54,9 @@ namespace unixhelper {
    * signal may be any of:
    *   * -1       to indicate an error leading to emergency termination
    *   * SIGHUP   as the standard signal that is sent when the
-   *              group leeader dies
+   *              group leader dies under specific circumstances
+   *              (we cannot rely that this always happens, though,
+   *               so a polling solution is needed, see unix_cleanup().)
    */
   void kill_pgroup (int signal);
 }

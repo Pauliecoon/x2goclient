@@ -109,7 +109,7 @@ int main (int argc, char **argv) {
 
   if (unix_helper_request) {
     /* We were instructed to start as the UNIX cleanup helper tool. */
-    return (unixhelper::unix_cleanup ());
+    return (unixhelper::unix_cleanup (getppid ()));
   }
   else {
     /*

@@ -49,7 +49,7 @@ namespace unixhelper {
   }
 
 
-  int unix_cleanup () {
+  int unix_cleanup (const pid_t parent) {
     /*
      * Unblock all signals first.
      * Signal blocks are inherited, so you never you what is currently set.
@@ -100,6 +100,13 @@ namespace unixhelper {
 
     /* Sleep forever... at least two seconds in each run. */
     for (;;) {
+      pid_t cur_ppid = getppid ();
+
+      /* cur_ppid should match parent, otherwise the parent died. */
+      if (cur_ppid != parent) {
+        kill_pgroup (SIGHUP);
+      }
+
       sleep (2);
     }
   }
