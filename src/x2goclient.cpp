@@ -47,20 +47,20 @@ int fork_helper (int argc, char **argv) {
     new_argv.push_back (std::string (argv[0]));
     new_argv.push_back ("--unixhelper");
 
-    std::vector<char *> new_argv_c_str;
+    std::vector<char *> *new_argv_c_str = new (std::vector<char *>) ();
     for (std::vector<std::string>::iterator it = new_argv.begin (); it != new_argv.end (); ++it) {
       const char *elem = (*it).c_str ();
-      new_argv_c_str.push_back (strndup (elem, std::strlen (elem)));
+      new_argv_c_str->push_back (strndup (elem, std::strlen (elem)));
     }
 
     /* Add null pointer as last element. */
     {
-      std::vector<char> tmp;
-      tmp.push_back (0);
-      new_argv_c_str.push_back (&tmp.front ());
+      std::vector<char> *tmp = new (std::vector<char>) ();
+      tmp->push_back (0);
+      new_argv_c_str->push_back (&tmp->front ());
     }
 
-    if (0 != execv (new_argv_c_str.front (), &(new_argv_c_str.front ()))) {
+    if (0 != execv (new_argv_c_str->front (), &(new_argv_c_str->front ()))) {
       std::cerr << "Failed to re-execute process as UNIX cleanup helper tool: " << std::strerror (errno) << "\n"
                 << "Terminating and killing parent." << "\n"
                 << "Please report a bug, refer to this documentation: http://wiki.x2go.org/doku.php/wiki:bugs" << std::endl;
