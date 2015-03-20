@@ -153,6 +153,7 @@ void AppDialog::loadApps()
             parent=other;
             break;
         default:
+            parent = NULL;
             break;
         }
 

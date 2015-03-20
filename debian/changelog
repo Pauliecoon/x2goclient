@@ -53,6 +53,8 @@ x2goclient (4.0.5.1-0x2go1) UNRELEASED; urgency=low
       correctly terminate arguments vector.
     - {appdialog,configwidget,onmainwindow,unixhelper}.cpp: fix some compile
       warnings with GCC. Fix a few whitespace issues.
+    - appdialog.cpp: initialize parent in default case. Another GCC compile
+      warning fix.
 
   [ Oleksandr Shneyder ]
   * New upstream release (4.0.5.1):
