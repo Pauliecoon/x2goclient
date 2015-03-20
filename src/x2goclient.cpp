@@ -54,11 +54,7 @@ int fork_helper (int argc, char **argv) {
     }
 
     /* Add null pointer as last element. */
-    {
-      std::vector<char> *tmp = new (std::vector<char>) ();
-      tmp->push_back (0);
-      new_argv_c_str->push_back (&tmp->front ());
-    }
+    new_argv_c_str->push_back (0);
 
     if (0 != execv (new_argv_c_str->front (), &(new_argv_c_str->front ()))) {
       std::cerr << "Failed to re-execute process as UNIX cleanup helper tool: " << std::strerror (errno) << "\n"

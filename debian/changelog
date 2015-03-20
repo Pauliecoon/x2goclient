@@ -49,6 +49,8 @@ x2goclient (4.0.5.1-0x2go1) UNRELEASED; urgency=low
       parent PID polling.
     - unixhelper.{cpp,h}: ignore SIGINT, SIGTERM, SIGPIPE, SIGQUIT, SIGUSR1
       and SIGUSR2.
+    - x2goclient.cpp: fix failing exec() call for the UNIX helper utility:
+      correctly terminate arguments vector.
 
   [ Oleksandr Shneyder ]
   * New upstream release (4.0.5.1):
