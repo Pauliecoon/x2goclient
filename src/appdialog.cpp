@@ -156,16 +156,18 @@ void AppDialog::loadApps()
             break;
         }
 
-        QTreeWidgetItem* it;
-        if (app.category==Application::TOP)
-            it=new QTreeWidgetItem(treeWidget);
-        else
-            it=new QTreeWidgetItem(parent);
-        it->setText(0, app.name);
-        it->setToolTip(0,app.comment);
-        it->setIcon(0,app.icon);
-        it->setData(0, Qt::UserRole, app.exec);
-        it->setData(0, Qt::UserRole+1, app.comment);
+        if (parent) {
+            QTreeWidgetItem* it;
+            if (app.category==Application::TOP)
+                it=new QTreeWidgetItem(treeWidget);
+            else
+                it=new QTreeWidgetItem(parent);
+            it->setText(0, app.name);
+            it->setToolTip(0,app.comment);
+            it->setIcon(0,app.icon);
+            it->setData(0, Qt::UserRole, app.exec);
+            it->setData(0, Qt::UserRole+1, app.comment);
+        }
     }
     treeWidget->sortItems(0,Qt::AscendingOrder);
 }

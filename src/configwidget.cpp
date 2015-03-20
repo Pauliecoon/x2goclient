@@ -24,8 +24,8 @@ ConfigWidget::ConfigWidget ( QString id, ONMainWindow * mw,
 {
 	sessionId=id;
 	mainWindow=mw;
-	miniMode=mw->retMiniMode();	
-	embedMode=embedMode= mw->getEmbedMode();
+	miniMode=mw->retMiniMode();
+	embedMode = mw->getEmbedMode();
 	if(embedMode)
 		sessionId="embedded";
 }
@@ -34,5 +34,3 @@ ConfigWidget::ConfigWidget ( QString id, ONMainWindow * mw,
 ConfigWidget::~ConfigWidget()
 {
 }
-
-

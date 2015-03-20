@@ -29,6 +29,7 @@
 #include <cstring>
 #include <cerrno>
 #include <vector>
+#include <cstdlib>
 
 /* For documentation please see unixhelper.h. */
 
@@ -117,6 +118,12 @@ namespace unixhelper {
 
       sleep (2);
     }
+
+    /*
+     * Anything here shall be unreachable.
+     * But make compilers happy by returning something.
+     */
+    return (EXIT_SUCCESS);
   }
 }
 
