@@ -61,6 +61,8 @@ x2goclient (4.0.5.1-0x2go1) UNRELEASED; urgency=low
       file. Generalize some Windows-specific sections by using QDir and QFile.
     - compat.{cpp,h}: new files. Implements strndup on OS X 10.6 and below.
       Add to x2goclient.cpp, x2goclient.pro and x2goclient.pro.maemo.
+    - compat.{cpp,h}: remove inline keyword, because function is not defined
+      in header file.
 
   [ Oleksandr Shneyder ]
   * New upstream release (4.0.5.1):

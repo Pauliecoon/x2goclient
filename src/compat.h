@@ -31,7 +31,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-inline char *strndup (const char *s, size_t n);
+char *strndup (const char *s, size_t n);
 #endif /* MAC_OS_X_VERSION_MIN_REQUIRED */
 #endif /* defined (Q_OS_DARWIN) */
 
