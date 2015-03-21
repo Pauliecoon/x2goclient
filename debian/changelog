@@ -55,6 +55,10 @@ x2goclient (4.0.5.1-0x2go1) UNRELEASED; urgency=low
       warnings with GCC. Fix a few whitespace issues.
     - appdialog.cpp: initialize parent in default case. Another GCC compile
       warning fix.
+    - onmainwindow.cpp: correctly use ~/.x2go/.ssh as ssh directory when
+      starting sshd in user mode. Put the authorized_keys file in there. Check
+      and set correct permissions for both the directory and authorized_keys
+      file. Generalize some Windows-specific sections by using QDir and QFile.
 
   [ Oleksandr Shneyder ]
   * New upstream release (4.0.5.1):

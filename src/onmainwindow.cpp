@@ -7947,43 +7947,54 @@ void ONMainWindow::slotRetExportDir ( bool result,QString output,
 
     QByteArray line = file.readLine();
     file.close();
-    QString authofname=homeDir;
-#ifdef Q_OS_WIN
-    QDir dir;
-    dir.mkpath ( authofname+"\\.x2go\\.ssh" );
 
-    x2goDebug<<"Creating "<<authofname+"\\.x2go\\.ssh";
+    QDir authorized_keys_dir (homeDir);
 
-    authofname=wapiShortFileName ( authofname ) +"/.x2go";
-#endif
-    authofname+="/.ssh/authorized_keys" ;
-    file.setFileName ( authofname );
-    if ( !file.open ( QIODevice::ReadOnly | QIODevice::Text ) )
-    {
-        printSshDError_noAuthorizedKeysFile();
-        QFile::remove
-        ( key+".pub" );
-        return;
+    /*
+     * Do the user SSHD/global SSHD dance here and either use the
+     * private .x2go/.ssh or the global .ssh dir.
+     */
+    if (userSshd) {
+      authorized_keys_dir = QDir (authorized_keys_dir.absolutePath () + "/.x2go/");
     }
 
+    authorized_keys_dir = QDir (authorized_keys_dir.absolutePath () + "/.ssh/");
+    QFile authorized_keys_file (authorized_keys_dir.absolutePath () + "/authorized_keys");
 
-    QTemporaryFile tfile ( authofname );
-    tfile.open();
-    tfile.setAutoRemove ( true );
-    QTextStream out ( &tfile );
-
-    while ( !file.atEnd() )
-    {
-        QByteArray newline = file.readLine();
-        if ( newline!=line )
-            out<<newline;
+    /*
+     * We do not try to create the file first.
+     * This has been already done in startX2goMount().
+     * We wouldn't be here if that failed.
+     */
+    if (!authorized_keys_file.open (QIODevice::ReadOnly | QIODevice::Text)) {
+      printSshDError_noAuthorizedKeysFile ();
+      QFile::remove (key + ".pub");
+      return;
     }
-    file.close();
-    tfile.close();
-    file.remove();
-    tfile.copy ( authofname );
-    QFile::remove
-    ( key+".pub" );
+
+    QTemporaryFile tfile (authorized_keys_file.fileName ());
+    tfile.open ();
+    tfile.setPermissions (QFile::ReadOwner | QFile::WriteOwner);
+    tfile.setAutoRemove (true);
+    QTextStream out (&tfile);
+
+    /*
+     * Copy the content of the authorized_keys file to our new temporary file
+     * and remove the public authorized key for the current "session" again.
+     */
+    while (!authorized_keys_file.atEnd ()) {
+      QByteArray newline = authorized_keys_file.readLine ();
+      if (newline != line)
+        out << newline;
+    }
+
+    authorized_keys_file.close ();
+    tfile.close ();
+
+    authorized_keys_file.remove ();
+
+    tfile.copy (authorized_keys_file.fileName ());
+    QFile::remove (key + ".pub");
 }
 
 
@@ -9208,41 +9219,90 @@ void ONMainWindow::startX2goMount()
 
     QByteArray line = file.readLine();
     file.close();
-    QString authofname=homeDir;
-#ifdef Q_OS_WIN
-    QDir tdir;
-    tdir.mkpath ( authofname+"\\.x2go\\.ssh" );
 
-    x2goDebug<<"Creating "<<authofname+"\\.x2go\\.ssh";
+    QDir authorized_keys_dir (homeDir);
 
-    authofname=wapiShortFileName ( authofname ) +"/.x2go";
-#endif
-    authofname+= "/.ssh/authorized_keys" ;
-
-    QFile file1 ( authofname );
-
-    if ( !file1.open ( QIODevice::WriteOnly | QIODevice::Text |
-                       QIODevice::Append ) )
-    {
-        QString message=tr ( "Unable to write:\n" ) + authofname;
-        QMessageBox::critical ( 0l,tr ( "Error" ),message,
-                                QMessageBox::Ok,
-                                QMessageBox::NoButton );
-        QFile::remove
-        ( fsExportKey+".pub" );
-        return;
-
+    /*
+     * Do the user SSHD/global SSHD dance here and either use the
+     * private .x2go/.ssh or the global .ssh dir.
+     */
+    if (userSshd) {
+      authorized_keys_dir = QDir (authorized_keys_dir.absolutePath () + "/.x2go/");
     }
-    directory* dir=getExpDir ( fsExportKey );
-    bool rem=dir->isRemovable;
-    if ( !dir )
-        return;
 
-    QTextStream out ( &file1 );
-    out<<line;
-    file1.close();
+    authorized_keys_dir = QDir (authorized_keys_dir.absolutePath () + "/.ssh/");
+    QFile authorized_keys_file (authorized_keys_dir.absolutePath () + "/authorized_keys");
 
-    x2goDebug<<"Temporarily activated public key from file "<<fsExportKey<<".pub."<<endl;
+    if (userSshd) {
+      x2goDebug << "Creating dir " << authorized_keys_dir.absolutePath ();
+      authorized_keys_dir.mkpath (authorized_keys_dir.absolutePath ());
+    }
+
+    x2goDebug << "Potentially creating file " << authorized_keys_file.fileName ();
+    if (!authorized_keys_file.open (QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append)) {
+      QString message = tr ("Unable to create or append to file: ") + authorized_keys_file.fileName ();
+      QMessageBox::critical (0l, tr ("Error"), message,
+                             QMessageBox::Ok, QMessageBox::NoButton);
+      QFile::remove (fsExportKey + ".pub");
+      return;
+    }
+
+#ifdef Q_OS_UNIX
+    QFile::Permissions authorized_keys_file_perm = authorized_keys_file.permissions ();
+    QFile::Permissions authorized_keys_file_target_perm = QFile::ReadOwner | QFile::WriteOwner;
+
+    bool permission_error = false;
+
+    /*
+     * Try to set the permissions if they are wrong.
+     * (sshd would disallow such a file.)
+     */
+    if (authorized_keys_file_perm != authorized_keys_file_target_perm) {
+      if (!authorized_keys_file.setPermissions (authorized_keys_file_target_perm)) {
+        /* FIXME: use a function for this... */
+        QString message = tr ("Unable to change the permissions of file: ") + authorized_keys_file.fileName ();
+        message += "\n" + tr ("This is an error because sshd would deny such a file.");
+        QMessageBox::critical (NULL, tr ("Error"), message,
+                               QMessageBox::Ok, QMessageBox::NoButton);
+        permission_error = true;
+      }
+    }
+
+    QFile::Permissions authorized_keys_dir_perm = QFile (authorized_keys_dir.absolutePath ()).permissions ();
+    QFile::Permissions authorized_keys_dir_target_perm = QFile::ReadOwner | QFile::WriteOwner | QFile::ExeOwner;
+
+    /*
+     * Try to set the permissions if they are wrong.
+     * (sshd would disallow such a directory.)
+     */
+    if (authorized_keys_dir_perm != authorized_keys_dir_target_perm) {
+      if (!QFile (authorized_keys_dir.absolutePath ()).setPermissions (authorized_keys_dir_target_perm)) {
+        /* FIXME: use a function for this... */
+        QString message = tr ("Unable to change the permissions of directory: ") + authorized_keys_dir.absolutePath ();
+        message += "\n" + tr ("This is an error because sshd would deny such a directory.");
+        QMessageBox::critical (NULL, tr ("Error"), message,
+                               QMessageBox::Ok, QMessageBox::NoButton);
+        permission_error = true;
+      }
+    }
+
+    if (permission_error) {
+      QFile::remove (fsExportKey + ".pub");
+      return;
+    }
+#endif /* defined (Q_OS_UNIX) */
+
+    directory* dir = getExpDir (fsExportKey);
+    bool rem = dir->isRemovable;
+    if (!dir) {
+      return;
+    }
+
+    QTextStream out (&authorized_keys_file);
+    out << line;
+    authorized_keys_file.close ();
+
+    x2goDebug << "Temporarily activated public key from file " << fsExportKey << ".pub.";
 
     QString passwd=getCurrentPass();
     QString user=getCurrentUname();
@@ -10020,18 +10080,19 @@ void ONMainWindow::generateEtcFiles()
     QFile file ( etcDir +"/sshd_config" );
     if ( !file.open ( QIODevice::WriteOnly | QIODevice::Text ) )
         return;
+    QString authKeyPath = homeDir + "/.x2go/.ssh/authorized_keys";
 #ifdef Q_OS_WIN
-    QString authKeyPath=cygwinPath ( homeDir+"/.x2go/.ssh/authorized_keys" );
-    authKeyPath.replace(wapiGetUserName(),"%u");
-#endif
+    authKeyPath = cygwinPath (authKeyPath);
+    authKeyPath.replace (wapiGetUserName (), "%u");
+#endif /* defined (Q_OS_WIN) */
     QTextStream out ( &file );
     out<<"StrictModes no\n"<<
        "UsePrivilegeSeparation no\n"<<
        "PidFile \"" + varDir + "/sshd.pid\"\n" <<
+       "AuthorizedKeysFile \"" << authKeyPath << "\"\n" <<
 #ifdef Q_OS_WIN
        "Subsystem shell "<< wapiShortFileName ( appDir) +"/sh"+"\n"<<
        "Subsystem sftp "<< wapiShortFileName ( appDir) +"/sftp-server"+"\n"<<
-       "AuthorizedKeysFile \""<<authKeyPath<<"\"";
 #else
       /* This may need some sanitization, i.e., appDir could potentially include whitespace. */
        "Subsystem sftp "
