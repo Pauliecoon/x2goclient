@@ -80,7 +80,8 @@ HEADERS += src/configdialog.h \
            src/folderexplorer.h \
            src/non_modal_messagebox.h \
            src/help.h \
-           src/unixhelper.h
+           src/unixhelper.h \
+           src/compat.h
 
 SOURCES += src/sharewidget.cpp \
            src/settingswidget.cpp \
@@ -124,7 +125,8 @@ SOURCES += src/sharewidget.cpp \
            src/folderexplorer.cpp \
            src/non_modal_messagebox.cpp \
            src/help.cpp \
-           src/unixhelper.cpp
+           src/unixhelper.cpp \
+           src/compat.cpp
 
 LIBS += -lssh
 win32:LIBS += -lAdvAPI32 -lshell32 -lUser32

@@ -30,6 +30,7 @@
 
 #include "unixhelper.h"
 #include "ongetpass.h"
+#include "compat.h"
 
 int wrap_x2go_main (int argc, char **argv) {
   return (x2goMain (argc, argv));

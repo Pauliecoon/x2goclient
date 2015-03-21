@@ -59,6 +59,8 @@ x2goclient (4.0.5.1-0x2go1) UNRELEASED; urgency=low
       starting sshd in user mode. Put the authorized_keys file in there. Check
       and set correct permissions for both the directory and authorized_keys
       file. Generalize some Windows-specific sections by using QDir and QFile.
+    - compat.{cpp,h}: new files. Implements strndup on OS X 10.6 and below.
+      Add to x2goclient.cpp, x2goclient.pro and x2goclient.pro.maemo.
 
   [ Oleksandr Shneyder ]
   * New upstream release (4.0.5.1):
