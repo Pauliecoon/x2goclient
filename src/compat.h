@@ -17,9 +17,10 @@
  *  59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.              *
  ***************************************************************************/
 
-
 #ifndef COMPAT_H
 #define COMPAT_H
+
+#include <QtCore/qglobal.h>
 
 #ifdef Q_OS_DARWIN
 /*
