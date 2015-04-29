@@ -81,7 +81,8 @@ HEADERS += src/configdialog.h \
            src/non_modal_messagebox.h \
            src/help.h \
            src/unixhelper.h \
-           src/compat.h
+           src/compat.h \
+           src/pulsemanager.h
 
 SOURCES += src/sharewidget.cpp \
            src/settingswidget.cpp \
@@ -126,7 +127,8 @@ SOURCES += src/sharewidget.cpp \
            src/non_modal_messagebox.cpp \
            src/help.cpp \
            src/unixhelper.cpp \
-           src/compat.cpp
+           src/compat.cpp \
+           src/pulsemanager.cpp
 
 LIBS += -lssh
 win32:LIBS += -lAdvAPI32 -lshell32 -lUser32

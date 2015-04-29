@@ -37,7 +37,8 @@ HEADERS += src/configdialog.h \
            src/clicklineedit.h \
            src/help.h \
            src/unixhelper.h \
-           src/compat.h
+           src/compat.h \
+           src/pulsemanager.h
 
 SOURCES += src/sharewidget.cpp \
            src/settingswidget.cpp \
@@ -66,7 +67,8 @@ SOURCES += src/sharewidget.cpp \
            src/clicklineedit.cpp \
            src/help.cpp \
            src/unixhelper.cpp \
-           src/compat.cpp
+           src/compat.cpp \
+           src/pulsemanager.cpp
 
 TEMPLATE = app
 TARGET =
