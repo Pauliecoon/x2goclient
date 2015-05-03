@@ -79,6 +79,9 @@ x2goclient (4.0.5.1-0x2go1) UNRELEASED; urgency=low
       was not found.
     - macbuild.sh: copy PulseAudio libraries and binaries.
     - macbuild.sh: add phase output for bundling nxproxy.
+    - macbuild.sh: add work-in-progress PulseAudio bundling. Needs to be ripped
+      apart and be redone, because dylibbundler is not smart enough to handle
+      our case.
 
   [ Oleksandr Shneyder ]
   * New upstream release (4.0.5.1):

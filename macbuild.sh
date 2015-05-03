@@ -270,6 +270,41 @@ if [ "${BUNDLE}" = "1" ]; then
 		--install-path "@executable_path/../Frameworks/" \
 		--create-dir
 
+	phase "Bundling PulseAudio"
+	typeset cur_binary_name=""
+	for cur_binary in ${PULSEAUDIO_BINARIES_FULL[@]}; do
+		if [ ! -L "${cur_binary}" ]; then
+			cur_binary_name="$(basename "${cur_binary}")"
+			dylibbundler \
+				--fix-file "${EXE_DIR}/${cur_binary_name}" \
+				--bundle-deps \
+				--dest-dir "${FRAMEWORKS_DIR}/" \
+				--install-path "@executable_path/../Frameworks/" \
+				--create-dir \
+				--overwrite-files
+		fi
+	done
+
+	typeset intermediate_lib_dir=""
+	for cur_binary in ${PULSEAUDIO_LIBRARIES_FULL[@]}; do
+		intermediate_lib_dir="$(lazy_canonical_path "$(dirname "${cur_binary}")/")"
+		intermediate_lib_dir="${intermediate_lib_dir##"$(lazy_canonical_path "${MACPORTS_PREFIX}/lib/")"}"
+
+		if [ ! -L "${cur_binary}" ]; then
+			cur_binary_name="$(basename "${cur_binary}")"
+
+			typeset nesting_level="$(get_nesting_level "${intermediate_lib_dir}")"
+
+			dylibbundler \
+				--fix-file "${FRAMEWORKS_DIR}/${intermediate_lib_dir}/${cur_binary_name}" \
+				--bundle-deps \
+				--dest-dir "${FRAMEWORKS_DIR}/" \
+				--install-path "@loader_path/$(repeat_str "../" "${nesting_level}")Frameworks/" \
+				--create-dir \
+				--overwrite-files
+		fi
+	done
+
 	phase "Bundling up using macdeployqt"
 	macdeployqt "${APPBUNDLE}" -verbose=2
 
