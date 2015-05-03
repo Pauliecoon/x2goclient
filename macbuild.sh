@@ -39,6 +39,20 @@ usage() {
 	exit 2
 }
 
+dependency_error() {
+	exec >&2
+
+	typeset element="${1}"; shift
+	typeset component="${1}"; shift
+	typeset type="${1}"; shift
+
+	echo "${element} ${type} not found."
+	echo "Install ${component} -- e.g., via "port -vt install ${component}" if using MacPorts."
+	echo "If ${component} is already installed, try passing MACPORTS_PREFIX if the autodetected or default value (${MACPORTS_PREFIX}) does not match your setup."
+
+	exit 3
+}
+
 MATCH_HELP='(^((-h)|(--help))([ 	]|$))|([ 	]+((-h)|(--help))([ 	]|$))'
 [ -n "${*}" ] && [[ "${*}" =~ ${MATCH_HELP} ]] && usage
 
