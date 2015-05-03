@@ -244,6 +244,23 @@ mkdir -p "${FRAMEWORKS_DIR}/"
 phase "Copying nxproxy"
 cp -av "${NXPROXY}" "${EXE_DIR}/"
 
+phase "Copying PulseAudio"
+for cur_binary in ${PULSEAUDIO_BINARIES_FULL[@]}; do
+	cp -av "${cur_binary}" "${EXE_DIR}/"
+done
+
+typeset intermediate_lib_dir=""
+for cur_binary in ${PULSEAUDIO_LIBRARIES_FULL[@]}; do
+set -x
+	intermediate_lib_dir="$(lazy_canonical_path "$(dirname "${cur_binary}")/")"
+	intermediate_lib_dir="${intermediate_lib_dir##"$(lazy_canonical_path "${MACPORTS_PREFIX}/lib/")"}"
+
+	mkdir -p "${FRAMEWORKS_DIR}/${intermediate_lib_dir}/"
+
+	cp -av "${cur_binary}" "${FRAMEWORKS_DIR}/${intermediate_lib_dir}/"
+set +x
+done
+
 if [ "${BUNDLE}" = "1" ]; then
 	dylibbundler \
 		--fix-file "${EXE_DIR}/nxproxy" \
