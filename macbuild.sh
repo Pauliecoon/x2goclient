@@ -30,6 +30,7 @@ usage() {
 	printf "\tDEBUG\t\t\t\tenables or disables debug builds [boolean]\n\t\t\t\t\tdefault: disabled\n"
 	printf "\tBUNDLE\t\t\t\tenables or disables library bundling and the creation of a .dmg installer [boolean]\n\t\t\t\t\tdefault: enabled\n"
 	printf "\tUNIVERSAL\t\t\tenables or disables x86 support. x86_64 support is always enabled [boolean]\n\t\t\t\t\tdefault: enabled\n"
+	printf "\tMACPORTS_PREFIX\t\t\tsets the (MacPorts) prefix used to detect PulseAudio and nxproxy binaries\n\t\t\t\t\tdefault: /opt/local/\n"
 	printf "\n"
 	printf "Boolean values help:\n"
 	printf "\ta value of ${NO_VAL} will be treated as false\n"
@@ -52,12 +53,25 @@ PROJECT="${TOP_DIR}/${NAME}.pro"
 PKG_DMG="${TOP_DIR}/pkg-dmg"
 
 NXPROXY="$(which nxproxy)"
+# Try to find the MacPorts prefix.
+typeset MACPORTS_PREFIX_SEARCH=""
+if type -P port >/dev/null 2>&1; then
+	MACPORTS_PREFIX_SEARCH="$(type -P port)"
+	MACPORTS_PREFIX_SEARCH="${MACPORTS_PREFIX_SEARCH%%bin/port}"
+else
+	# Port not being part find in ${PATH} doesn't necessarily mean it isn't available.
+	# Try to guess.
+	MACPORTS_PREFIX_SEARCH="/opt/local/"
+fi
 
 : ${SDK:="/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk"}
 : ${MACOSX_DEPLOYMENT_TARGET:="10.7"}
 : ${DEBUG:="0"}
 : ${BUNDLE:="1"}
 : ${UNIVERSAL:="1"}
+: ${MACPORTS_PREFIX:="${MACPORTS_PREFIX_SEARCH}"}
+
+unset MACPORTS_PREFIX_SEARCH
 
 DEBUG="$(make_boolean "${DEBUG}")"
 BUNDLE="$(make_boolean "${BUNDLE}")"
