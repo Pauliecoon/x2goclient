@@ -79,6 +79,22 @@ set -x
 set +x
 }
 
+repeat_str() { # INPUT COUNT
+	typeset INPUT="${1:?"Error: no input string passed to ${FUNCNAME}()."}"
+	typeset COUNT="${2:?"Error: no count passed to ${FUNCNAME}()."}"
+
+	typeset ret=""
+	typeset -i i=0
+	while [ "${i}" -lt "${COUNT}" ]; do
+		ret="${ret}$(printf "${INPUT}")"
+		i=$((${i} + 1))
+	done
+
+	printf "${ret}"
+
+	return 0
+}
+
 MATCH_HELP='(^((-h)|(--help))([ 	]|$))|([ 	]+((-h)|(--help))([ 	]|$))'
 [ -n "${*}" ] && [[ "${*}" =~ ${MATCH_HELP} ]] && usage
 
