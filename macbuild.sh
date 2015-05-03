@@ -122,6 +122,13 @@ else
 fi
 
 NXPROXY="nxproxy"
+PULSEAUDIO_BINARIES=( "pulseaudio" "esdcompat" "pacat" "pacmd"      "pactl"
+                      "pamon"      "paplay"    "parec" "parecord"   "pasuspender" )
+PULSEAUDIO_LIBRARIES=( "libpulse-simple.0.dylib"
+                       "libpulse.0.dylib"
+                       "libpulsecore-6.0.dylib"
+                       "pulse-6.0"
+                       "pulseaudio" )
 
 : ${SDK:="/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk"}
 : ${MACOSX_DEPLOYMENT_TARGET:="10.7"}
@@ -156,6 +163,50 @@ fi
 NXPROXY="$(lazy_canonical_path "${MACPORTS_PREFIX}/bin/${NXPROXY}")"
 
 [ -x "${NXPROXY}" ] || dependency_error "nxproxy" "nxproxy" "binary"
+
+typeset -i i
+typeset -i fail
+typeset -a PULSEAUDIO_BINARIES_FULL
+typeset cur_binary
+fail="0"
+for cur_binary in ${PULSEAUDIO_BINARIES[@]}; do
+	cur_binary="$(lazy_canonical_path "${MACPORTS_PREFIX}/bin/${cur_binary}")"
+
+	if [ -x "${cur_binary}" ]; then
+		PULSEAUDIO_BINARIES_FULL+=( "${cur_binary}" )
+	else
+		fail="1"
+		break
+	fi
+done
+
+[ "${fail}" -eq "1" ] && dependency_error "${cur_binary##"$(lazy_canonical_path "${MACPORTS_PREFIX}/bin/")"}" "pulseaudio" "binary"
+
+typeset cur_lib_or_libdir
+typeset -a PULSEAUDIO_LIBRARIES_FULL
+fail="0"
+for cur_lib_or_libdir in ${PULSEAUDIO_LIBRARIES[@]}; do
+	cur_lib_or_libdir="$(lazy_canonical_path "${MACPORTS_PREFIX}/lib/${cur_lib_or_libdir}")"
+
+	if [ -x "${cur_lib_or_libdir}" ]; then
+		PULSEAUDIO_LIBRARIES_FULL+=( "${cur_lib_or_libdir}" )
+	elif [ -d "${cur_lib_or_libdir}" ]; then
+		# That's a directory... more work needed here.
+		typeset entry=""
+		for entry in "${cur_lib_or_libdir}"/*; do
+			typeset TMP_REGEX='^.*\.(so|dylib|bundle)(\.[0-9]+){0,2}$'
+			if [[ "${entry}" =~ ${TMP_REGEX} ]]; then
+				# Filename matched the expected template.
+				PULSEAUDIO_LIBRARIES_FULL+=( "$(lazy_canonical_path "${cur_lib_or_libdir}/${entry}")" )
+			fi
+		done
+	else
+		fail="1"
+		break
+	fi
+done
+
+[ "${fail}" -eq "1" ] && dependency_error "${cur_lib_or_libdir}" "pulseaudio" "library or library directory"
 
 set -e
 
