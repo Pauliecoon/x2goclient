@@ -104,6 +104,8 @@ TOP_DIR="$(dirname "$0")"
 [[ "${TOP_DIR}" == /* ]] || TOP_DIR="${PWD}/${TOP_DIR#./}"
 BUILD_DIR="${TOP_DIR}/client_build"
 APPBUNDLE="${BUILD_DIR}/${NAME}.app"
+EXE_DIR="${APPBUNDLE}/Contents/exe/"
+FRAMEWORKS_DIR="${APPBUNDLE}/Contents/Frameworks/"
 DMGFILE="${BUILD_DIR}/${NAME}.dmg"
 PROJECT="${TOP_DIR}/${NAME}.pro"
 PKG_DMG="${TOP_DIR}/pkg-dmg"
@@ -185,15 +187,17 @@ qmake -config "${BUILD_MODE}" -spec macx-g++ "${PROJECT}" \
 phase "Running make"
 make -j2
 
+mkdir -p "${EXE_DIR}/"
+mkdir -p "${FRAMEWORKS_DIR}/"
+
 phase "Copying nxproxy"
-mkdir -p "${APPBUNDLE}/Contents/exe"
-cp "${NXPROXY}" "${APPBUNDLE}/Contents/exe"
+cp -av "${NXPROXY}" "${EXE_DIR}/"
 
 if [ "${BUNDLE}" = "1" ]; then
 	dylibbundler \
-		--fix-file "${APPBUNDLE}/Contents/exe/nxproxy" \
+		--fix-file "${EXE_DIR}/nxproxy" \
 		--bundle-deps \
-		--dest-dir "${APPBUNDLE}/Contents/Frameworks" \
+		--dest-dir "${FRAMEWORKS_DIR}/" \
 		--install-path "@executable_path/../Frameworks/" \
 		--create-dir
 
