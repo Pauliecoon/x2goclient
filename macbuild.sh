@@ -53,6 +53,18 @@ dependency_error() {
 	exit 3
 }
 
+lazy_canonical_path() {
+	typeset path="${1}"
+
+	typeset old_path=""
+	while [ "${old_path}" != "${path}" ]; do
+		old_path="${path}"
+		path="${path//\/\///}"
+	done
+
+	printf "${old_path}"
+}
+
 MATCH_HELP='(^((-h)|(--help))([ 	]|$))|([ 	]+((-h)|(--help))([ 	]|$))'
 [ -n "${*}" ] && [[ "${*}" =~ ${MATCH_HELP} ]] && usage
 
