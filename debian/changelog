@@ -69,6 +69,7 @@ x2goclient (4.0.5.1-0x2go1) UNRELEASED; urgency=low
     - macbuild.sh: add new MACPORTS_PREFIX detection/variable.
     - macbuild.sh: add new dependency_error() helper function.
     - macbuild.sh: add new lazy_canonical_path() helper function.
+    - macbuild.sh: add new get_nesting_level() helper function.
 
   [ Oleksandr Shneyder ]
   * New upstream release (4.0.5.1):

@@ -65,6 +65,20 @@ lazy_canonical_path() {
 	printf "${old_path}"
 }
 
+get_nesting_level() {
+set -x
+	typeset -i level=0
+	typeset path="${1}"
+
+	while [ -n "${path}" ] && [ "${path}" != "." ] && [ "${path}" != "/" ]; do
+		i="$((${i} + 1))"
+		path="$(dirname "${path}")"
+	done
+
+	printf "${level}"
+set +x
+}
+
 MATCH_HELP='(^((-h)|(--help))([ 	]|$))|([ 	]+((-h)|(--help))([ 	]|$))'
 [ -n "${*}" ] && [[ "${*}" =~ ${MATCH_HELP} ]] && usage
 
