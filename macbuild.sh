@@ -188,7 +188,7 @@ fail="0"
 for cur_lib_or_libdir in ${PULSEAUDIO_LIBRARIES[@]}; do
 	cur_lib_or_libdir="$(lazy_canonical_path "${MACPORTS_PREFIX}/lib/${cur_lib_or_libdir}")"
 
-	if [ -x "${cur_lib_or_libdir}" ]; then
+	if [ ! -d "${cur_lib_or_libdir}" ] && [ -x "${cur_lib_or_libdir}" ]; then
 		PULSEAUDIO_LIBRARIES_FULL+=( "${cur_lib_or_libdir}" )
 	elif [ -d "${cur_lib_or_libdir}" ]; then
 		# That's a directory... more work needed here.

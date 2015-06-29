@@ -83,6 +83,8 @@ x2goclient (4.0.5.1-0x2go1) UNRELEASED; urgency=low
       apart and be redone, because dylibbundler is not smart enough to handle
       our case.
     - macbuild.sh: add Linux library file name scheme regex as a precaution.
+    - macbuild.sh: directories are "executable", so the first check must
+      explicitly include a check for the argument being not a directory.
 
   [ Oleksandr Shneyder ]
   * New upstream release (4.0.5.1):
