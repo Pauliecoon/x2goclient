@@ -82,6 +82,7 @@ x2goclient (4.0.5.1-0x2go1) UNRELEASED; urgency=low
     - macbuild.sh: add work-in-progress PulseAudio bundling. Needs to be ripped
       apart and be redone, because dylibbundler is not smart enough to handle
       our case.
+    - macbuild.sh: add Linux library file name scheme regex as a precaution.
 
   [ Oleksandr Shneyder ]
   * New upstream release (4.0.5.1):

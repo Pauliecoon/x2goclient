@@ -194,8 +194,13 @@ for cur_lib_or_libdir in ${PULSEAUDIO_LIBRARIES[@]}; do
 		# That's a directory... more work needed here.
 		typeset entry=""
 		for entry in "${cur_lib_or_libdir}"/*; do
-			typeset TMP_REGEX='^.*\.(so|dylib|bundle)(\.[0-9]+){0,2}$'
-			if [[ "${entry}" =~ ${TMP_REGEX} ]]; then
+			typeset TMP_REGEX='^.*\.(\.[0-9]+){0,2}(so|dylib|bundle)$'
+
+			# This is only here should the PA build system ever break and create
+			# "linux-style" library file names. Let's hope it never actually comes to that.
+			typeset TMP_REGEX_LINUX_COMPAT='^.*\.(so|dylib|bundle)(\.[0-9]+){0,2}$'
+
+			if [[ "${entry}" =~ ${TMP_REGEX} ]] || [[ "${entry}" =~ ${TMP_REGEX_LINUX_COMPAT} ]]; then
 				# Filename matched the expected template.
 				PULSEAUDIO_LIBRARIES_FULL+=( "$(lazy_canonical_path "${cur_lib_or_libdir}/${entry}")" )
 			fi
