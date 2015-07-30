@@ -207,7 +207,8 @@ for cur_lib_or_libdir in ${PULSEAUDIO_LIBRARIES[@]}; do
 
 			if [[ "${cur_file}" =~ ${TMP_REGEX} ]] || [[ "${cur_file}" =~ ${TMP_REGEX_LINUX_COMPAT} ]]; then
 				# Filename matched the expected template.
-				PULSEAUDIO_LIBRARIES_FULL+=( "$(lazy_canonical_path "${cur_lib_or_libdir}/${entry}")" )
+				echo "Adding $(lazy_canonical_path "${entry}") to \${PULSEAUDIO_LIBRARIES_FULL}"
+				PULSEAUDIO_LIBRARIES_FULL+=( "$(lazy_canonical_path "${entry}")" )
 			fi
 		done < <(find "${cur_lib_or_libdir}" -type 'f' -print0)
 	else
