@@ -125,8 +125,6 @@ NXPROXY="nxproxy"
 PULSEAUDIO_BINARIES=( "pulseaudio" "esdcompat" "pacat" "pacmd"      "pactl"
                       "pamon"      "paplay"    "parec" "parecord"   "pasuspender" )
 PULSEAUDIO_LIBRARIES=( "libpulse-simple.0.dylib"
-                       "libpulse.0.dylib"
-                       "libpulsecore-6.0.dylib"
                        "pulse-6.0"
                        "pulseaudio" )
 
