@@ -198,13 +198,14 @@ for cur_lib_or_libdir in ${PULSEAUDIO_LIBRARIES[@]}; do
 		# -d '': specifies the delimiter to be used - as '' resolves to an empty string followed
 		#        by a NUL character, the delimiter is set to this very NUL (\000) character.
 		while read -r -d '' entry; do
+			typeset cur_file="$(basename "${entry}")"
 			typeset TMP_REGEX='^.*\.(\.[0-9]+){0,2}(so|dylib|bundle)$'
 
 			# This is only here should the PA build system ever break and create
 			# "linux-style" library file names. Let's hope it never actually comes to that.
 			typeset TMP_REGEX_LINUX_COMPAT='^.*\.(so|dylib|bundle)(\.[0-9]+){0,2}$'
 
-			if [[ "${entry}" =~ ${TMP_REGEX} ]] || [[ "${entry}" =~ ${TMP_REGEX_LINUX_COMPAT} ]]; then
+			if [[ "${cur_file}" =~ ${TMP_REGEX} ]] || [[ "${cur_file}" =~ ${TMP_REGEX_LINUX_COMPAT} ]]; then
 				# Filename matched the expected template.
 				PULSEAUDIO_LIBRARIES_FULL+=( "$(lazy_canonical_path "${cur_lib_or_libdir}/${entry}")" )
 			fi
