@@ -311,7 +311,7 @@ if [ "${BUNDLE}" = "1" ]; then
 				--fix-file "${FRAMEWORKS_DIR}/${intermediate_lib_dir}/${cur_binary_name}" \
 				--bundle-deps \
 				--dest-dir "${FRAMEWORKS_DIR}/" \
-				--install-path "@loader_path/$(repeat_str "../" "${nesting_level}")Frameworks/" \
+				--install-path "@executable_path/$(repeat_str "../" "${nesting_level}")../Frameworks/" \
 				--create-dir \
 				--overwrite-files
 		fi

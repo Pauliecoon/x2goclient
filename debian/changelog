@@ -93,6 +93,8 @@ x2goclient (4.0.5.1-0x2go1) UNRELEASED; urgency=low
     - macbuild.sh: check current file name against regex, not a (now) full
       path.
     - macbuild.sh: add the correct file path to the library bundling array.
+    - macbuild.sh: when actually bundling libraries, use @executable_path
+      instead of @loader_path. Will need testing.
 
   [ Oleksandr Shneyder ]
   * New upstream release (4.0.5.1):
