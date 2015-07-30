@@ -189,9 +189,11 @@ for cur_lib_or_libdir in ${PULSEAUDIO_LIBRARIES[@]}; do
 	cur_lib_or_libdir="$(lazy_canonical_path "${MACPORTS_PREFIX}/lib/${cur_lib_or_libdir}")"
 
 	if [ ! -d "${cur_lib_or_libdir}" ] && [ -x "${cur_lib_or_libdir}" ]; then
+		echo "Adding ${cur_lib_or_libdir} to \${PULSEAUDIO_LIBRARIES_FULL}"
 		PULSEAUDIO_LIBRARIES_FULL+=( "${cur_lib_or_libdir}" )
 	elif [ -d "${cur_lib_or_libdir}" ]; then
 		# That's a directory... more work needed here.
+		echo "Scrubbing directory ${cur_lib_or_libdir}"
 		typeset entry=""
 		for entry in "${cur_lib_or_libdir}"/*; do
 			typeset TMP_REGEX='^.*\.(\.[0-9]+){0,2}(so|dylib|bundle)$'
@@ -297,6 +299,7 @@ if [ "${BUNDLE}" = "1" ]; then
 
 		if [ ! -L "${cur_binary}" ]; then
 			cur_binary_name="$(basename "${cur_binary}")"
+			echo "Handling ${cur_binary} => ${cur_binary_name}."
 
 			typeset nesting_level="$(get_nesting_level "${intermediate_lib_dir}")"
 
