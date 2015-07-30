@@ -193,7 +193,11 @@ for cur_lib_or_libdir in ${PULSEAUDIO_LIBRARIES[@]}; do
 		# That's a directory... more work needed here.
 		echo "Scrubbing directory ${cur_lib_or_libdir}"
 		typeset entry=""
-		for entry in "${cur_lib_or_libdir}"/*; do
+
+		# -r parameter to read: Backslashes may NOT escape any characters!
+		# -d '': specifies the delimiter to be used - as '' resolves to an empty string followed
+		#        by a NUL character, the delimiter is set to this very NUL (\000) character.
+		while read -r -d '' entry; do
 			typeset TMP_REGEX='^.*\.(\.[0-9]+){0,2}(so|dylib|bundle)$'
 
 			# This is only here should the PA build system ever break and create
@@ -204,7 +208,7 @@ for cur_lib_or_libdir in ${PULSEAUDIO_LIBRARIES[@]}; do
 				# Filename matched the expected template.
 				PULSEAUDIO_LIBRARIES_FULL+=( "$(lazy_canonical_path "${cur_lib_or_libdir}/${entry}")" )
 			fi
-		done
+		done < <(find "${cur_lib_or_libdir}" -type 'f' -print0)
 	else
 		fail="1"
 		break
