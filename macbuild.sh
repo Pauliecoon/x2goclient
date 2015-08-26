@@ -310,8 +310,8 @@ if [ "${BUNDLE}" = "1" ]; then
 			dylibbundler \
 				--fix-file "${FRAMEWORKS_DIR}/${intermediate_lib_dir}/${cur_binary_name}" \
 				--bundle-deps \
-				--dest-dir "${FRAMEWORKS_DIR}/" \
-				--install-path "@executable_path/$(repeat_str "../" "${nesting_level}")../Frameworks/" \
+				--dest-dir "${FRAMEWORKS_DIR}/${intermediate_lib_dir}" \
+				--install-path "@executable_path/$(repeat_str "../" "${nesting_level}")../Frameworks/${intermediate_lib_dir}" \
 				--create-dir \
 				--overwrite-files
 		fi
