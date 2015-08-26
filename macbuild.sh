@@ -303,7 +303,7 @@ if [ "${BUNDLE}" = "1" ]; then
 
 		if [ ! -L "${cur_binary}" ]; then
 			cur_binary_name="$(basename "${cur_binary}")"
-			echo "Handling ${cur_binary} => ${cur_binary_name}."
+			echo "Handling ${cur_binary} => ${intermediate_lib_dir}/${cur_binary_name}."
 
 			typeset nesting_level="$(get_nesting_level "${intermediate_lib_dir}")"
 
