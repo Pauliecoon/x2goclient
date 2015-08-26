@@ -84,6 +84,7 @@ typeset -a to_files
 for entry in ${duplicates[@]}; do
 	typeset filename="$(basename "${entry}")"
 
+	typeset all_entry=""
 	for all_entry in ${all_files[@]}; do
 		typeset all_entry_filename="$(basename "${all_entry}")"
 
