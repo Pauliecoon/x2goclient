@@ -1,0 +1,79 @@
+#!/bin/bash
+
+typeset base_dir=""
+base_dir="${1:?"No base dir given."}"
+
+typeset -a special_files_regex
+special_files_regex+=( "pulseaudio/libpulsecommon-[0-9]\.[0-9]\.dylib" )
+
+typeset -a all_files
+typeset entry=""
+while read -r -d '' entry; do
+	all_files+=( "${entry}" )
+done < <(find "${base_dir}" -type 'f' -print0)
+
+typeset -a top_files
+for entry in ${all_files[@]}; do
+	typeset relative_path="${entry##"${base_dir}/"}"
+	typeset tmp_regex='^[^/]+$'
+	if [[ "${relative_path}" =~ ${tmp_regex} ]]; then
+		echo "${relative_path} is top file, adding to array."
+		top_files+=( "${relative_path}" )
+	fi
+done
+
+typeset -a duplicates
+for entry in ${all_files[@]}; do
+	typeset relative_path="${entry##"${base_dir}/"}"
+	typeset file_name="$(basename "${entry}")"
+	typeset top_entry=""
+	for top_entry in ${top_files[@]}; do
+		if [ "${top_entry}" != "${relative_path}" ]; then
+			if [ "${file_name}" = "${top_entry}" ]; then
+				echo "Adding duplicate: ${relative_path}"
+				duplicates+=( "${relative_path}" )
+			fi
+		fi
+	done
+done
+
+echo "duplicates array before:"
+for entry in ${duplicates[@]}; do
+	echo "${entry}"
+done
+
+typeset -i i="0"
+for ((i = 0; i < ${#duplicates[@]}; ++i)); do
+	entry="${duplicates[${i}]}"
+	typeset special_file_regex=""
+	for special_file_regex in ${special_files_regex[@]}; do
+		typeset tmp_regex='^'"${special_file_regex}"'$'
+		if [[ "${entry}" =~ ${tmp_regex} ]]; then
+			echo "mv \"${base_dir}/$(basename "${entry}")\" \"${base_dir}/$(dirname "${special_file_regex}")/\""
+			duplicates[${i}]="$(basename "${entry}")"
+			echo "Renamed ${entry} in duplicates array to ${duplicates[${i}]}"
+		fi
+	done
+done
+
+echo "duplicates array after:"
+for entry in ${duplicates[@]}; do
+	echo "${entry}"
+done
+
+for entry in ${duplicates[@]}; do
+	echo "rm -v ${base_dir}/${entry}"
+	typeset -i i="0"
+	for ((i = 0; i < ${#all_files[@]}; ++i)); do
+		typeset all_entry="${all_files[${i}]}"
+		typeset relative_path="${all_entry##"${base_dir}/"}"
+		if [ "${relative_path}" = "${entry}" ]; then
+			all_files[${i}]=""
+		fi
+	done
+done
+
+echo "New value for all_files:"
+for entry in ${all_files[@]}; do
+	echo "${entry}"
+done
