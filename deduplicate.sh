@@ -77,3 +77,31 @@ echo "New value for all_files:"
 for entry in ${all_files[@]}; do
 	echo "${entry}"
 done
+
+echo "Duplicates-to-real map:"
+# Build complementary array to duplicates.
+typeset -a to_files
+for entry in ${duplicates[@]}; do
+	typeset filename="$(basename "${entry}")"
+
+	for all_entry in ${all_files[@]}; do
+		typeset all_entry_filename="$(basename "${all_entry}")"
+
+		if [ -n "${filename}" ] && [ -n "${all_entry_filename}" ]; then
+			if [ "${filename}" = "${all_entry_filename}" ]; then
+				to_files+=( "${all_entry}" )
+
+				echo "${entry} => ${all_entry}"
+
+				# There should be only one entry matching, so we can save a bit of time and break out of the loop.
+				# Even more importantly, we only want one entry for each duplicates entry anyway...
+				break
+			fi
+		else
+			echo "WARNING: empty file name while matching duplicates with non-duplicates." >&2
+			echo "WARNING: duplicate entry: \"${entry}\"" >&2
+			echo "WARNING: real entry: \"${all_entry}\"" >&2
+			exit 1
+		fi
+	done
+done
