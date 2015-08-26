@@ -6,6 +6,33 @@ base_dir="${1:?"No base dir given."}"
 typeset -a special_files_regex
 special_files_regex+=( "pulseaudio/libpulsecommon-[0-9]\.[0-9]\.dylib" )
 
+typeset -a otool_fail_str
+otool_fail_str=( "is not an object file"
+		 "can't open file"
+		 "Archive : " )
+
+parse_otool_output() {
+	typeset raw_output="${@}"
+
+	typeset fail_str=""
+	for fail_str in ${otool_fail_str}; do
+		if ! echo "${raw_output}" | grep -q "${fail_str}"; then
+			exit 1
+		fi
+	done
+
+	typeset tmp_regex='^[[:space:]]+(.*)[[:space:]]\(compatibility version .*, current version .*\)'
+
+	typeset line=""
+	while read -r line; do
+		if [[ "${line}" =~ ${tmp_regex} ]]; then
+			echo "${BASH_REMATCH[1]}"
+		fi
+	done <<< "${raw_output}"
+
+	exit 0
+}
+
 typeset -a all_files
 typeset entry=""
 while read -r -d '' entry; do
