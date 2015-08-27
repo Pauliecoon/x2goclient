@@ -114,6 +114,9 @@ x2goclient (4.0.5.1-0x2go1) UNRELEASED; urgency=low
       "sparse" arrays correctly.
     - deduplicate.sh: quote "${arr[@]}" correctly to not suddenly force word
       splitting.
+    - deduplicate.sh: fix parse_otool_output: we want to return failure only
+      iff any of the strings are present in otool's output and actually handle
+      the failure string *ARRAY* correctly as that.
 
   [ Oleksandr Shneyder ]
   * New upstream release (4.0.5.1):

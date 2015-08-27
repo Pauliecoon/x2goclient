@@ -15,9 +15,9 @@ parse_otool_output() {
 	typeset raw_output="${@}"
 
 	typeset fail_str=""
-	for fail_str in ${otool_fail_str}; do
-		if ! echo "${raw_output}" | grep -q "${fail_str}"; then
-			exit 1
+	for fail_str in "${otool_fail_str[@]}"; do
+		if echo "${raw_output}" | grep -q "${fail_str}"; then
+			return 1
 		fi
 	done
 
