@@ -70,7 +70,7 @@ for entry in ${duplicates[@]}; do
 done
 
 typeset -i i="0"
-for ((i = 0; i < ${#duplicates[@]}; ++i)); do
+for i in "${!duplicates[@]}"; do
 	entry="${duplicates[${i}]}"
 	typeset special_file_regex=""
 	for special_file_regex in ${special_files_regex[@]}; do
@@ -91,7 +91,7 @@ done
 for entry in ${duplicates[@]}; do
 	echo "rm -v ${base_dir}/${entry}"
 	typeset -i i="0"
-	for ((i = 0; i < ${#all_files[@]}; ++i)); do
+	for i in "${!all_files[@]}"; do
 		typeset all_entry="${all_files[${i}]}"
 		typeset relative_path="${all_entry##"${base_dir}/"}"
 		if [ "${relative_path}" = "${entry}" ]; then
