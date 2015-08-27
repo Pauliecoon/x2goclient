@@ -24,6 +24,11 @@ set -x
 
 	typeset tmp_regex='^[[:space:]]+(.*)[[:space:]]\(compatibility version .*, current version .*\)'
 
+
+	# In this special case, we do not want read to perform any word splitting.
+	typeset oldifs="${IFS}"
+	IFS=''
+
 	typeset line=""
 	while read -r line; do
 		if [[ "${line}" =~ ${tmp_regex} ]]; then
@@ -31,6 +36,7 @@ set -x
 		fi
 	done <<< "${raw_output}"
 
+	IFS="${oldifs}"
 set +x
 	return 0
 }
