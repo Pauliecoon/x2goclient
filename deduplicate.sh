@@ -30,7 +30,7 @@ parse_otool_output() {
 		fi
 	done <<< "${raw_output}"
 
-	exit 0
+	return 0
 }
 
 typeset -a all_files
