@@ -162,7 +162,9 @@ for all_entry in "${all_files[@]}"; do
 				if [ -n "${dependencies_filename}" ] && [ -n "${duplicate_filename}"]; then
 					
 				else
-					echo "ERROR: empty file name while duplicates with dependencies." >&2
+					echo "ERROR: empty file name while replacing duplicate dependencies." >&2
+					echo "ERROR: for file ${all_entry}" >&2
+					echo "ERROR: at dependency ${line}" >&2
 					echo "ERROR: duplicate entry: \"${duplicate_entry}\"" >&2
 					echo "ERROR: dependency: \"${line}\"" >&2
 					exit 1

@@ -126,6 +126,8 @@ x2goclient (4.0.5.1-0x2go1) UNRELEASED; urgency=low
     - deduplicate.sh: switch to range-based for loop in fixup section for
       duplicate array walking as we need to access the same element index in
       the replacement array.
+    - deduplicate.sh: add more useful information in fixup section's error
+      message.
 
   [ Oleksandr Shneyder ]
   * New upstream release (4.0.5.1):
