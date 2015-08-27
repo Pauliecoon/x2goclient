@@ -135,6 +135,8 @@ x2goclient (4.0.5.1-0x2go1) UNRELEASED; urgency=low
       output.
     - deduplicate.sh: save dependency format base string as a readonly
       variable and use that instead of repeating a fixed string.
+    - deduplicate.sh: copy lazy_canonical_path from macbuild.sh for now.
+      deduplicate.sh will eventually be merged into macbuild.sh anyway.
 
   [ Oleksandr Shneyder ]
   * New upstream release (4.0.5.1):
