@@ -123,6 +123,9 @@ x2goclient (4.0.5.1-0x2go1) UNRELEASED; urgency=low
     - deduplicate.sh: debug parse_otool_output fiercly for the time being.
     - deduplicate.sh: prevent word splitting when parsing otool's output. We
       want the raw bits.
+    - deduplicate.sh: switch to range-based for loop in fixup section for
+      duplicate array walking as we need to access the same element index in
+      the replacement array.
 
   [ Oleksandr Shneyder ]
   * New upstream release (4.0.5.1):

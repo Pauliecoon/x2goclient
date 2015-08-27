@@ -154,7 +154,9 @@ for all_entry in "${all_files[@]}"; do
 			typeset dependencies_filename="$(basename "${line}")"
 
 			typeset duplicate_entry=""
-			for duplicate_entry in ${duplicates[@]}; do
+			typeset -i i="0"
+			for i in "${!duplicates[@]}"; do
+				typeset duplicate_entry="${duplicates[${i}]}"
 				typeset duplicate_filename="$(basename "${duplicate_entry}")"
 
 				if [ -n "${dependencies_filename}" ] && [ -n "${duplicate_filename}"]; then
