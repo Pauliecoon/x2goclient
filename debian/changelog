@@ -138,6 +138,11 @@ x2goclient (4.0.5.1-0x2go1) UNRELEASED; urgency=low
     - deduplicate.sh: copy lazy_canonical_path from macbuild.sh for now.
       deduplicate.sh will eventually be merged into macbuild.sh anyway.
     - deduplicate.sh: more temporary debugging output in fixup section.
+    - deduplicate.sh: surprisingly, it turned out that only checking the
+      duplicate's basename against the current dependency's basename is not
+      good enough. Actually construct "the real dependency-format duplicate
+      string" and check it against "the real dependency". Even this is still
+      not good enough as it needs a bit cleanup - coming up next.
 
   [ Oleksandr Shneyder ]
   * New upstream release (4.0.5.1):
