@@ -12,6 +12,7 @@ otool_fail_str=( "is not an object file"
 		 "Archive : " )
 
 parse_otool_output() {
+set -x
 	typeset raw_output="${@}"
 
 	typeset fail_str=""
@@ -30,6 +31,7 @@ parse_otool_output() {
 		fi
 	done <<< "${raw_output}"
 
+set +x
 	return 0
 }
 
