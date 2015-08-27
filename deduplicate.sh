@@ -175,12 +175,14 @@ for all_entry in "${all_files[@]}"; do
 		typeset line=""
 		while read -r line; do
 			typeset dependencies_filename="$(basename "${line}")"
+			echo "dependency of ${all_entry}: ${line}"
 
 			typeset duplicate_entry=""
 			typeset -i i="0"
 			for i in "${!duplicates[@]}"; do
 				typeset duplicate_entry="${duplicates[${i}]}"
 				typeset duplicate_filename="$(basename "${duplicate_entry}")"
+				echo "checking for duplicate ${duplicate_entry}"
 
 				if [ -n "${dependencies_filename}" ] && [ -n "${duplicate_filename}" ]; then
 					if [ "${dependencies_filename}" = "${duplicate_filename}" ]; then
