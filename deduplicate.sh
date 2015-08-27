@@ -29,10 +29,19 @@ set -x
 	typeset oldifs="${IFS}"
 	IFS=''
 
+	# Used for skipping the first matching entry - which should typically be the ID line...
+	# That's a very naïve way to do this. Maybe there should be a bit more magic
+	# to catch this more reliably.
+	typeset -i first="1"
+
 	typeset line=""
 	while read -r line; do
 		if [[ "${line}" =~ ${tmp_regex} ]]; then
-			echo "${BASH_REMATCH[1]}"
+			if [ "${first}" -ne "1" ]; then
+				echo "${BASH_REMATCH[1]}"
+			else
+				first="0"
+			fi
 		fi
 	done <<< "${raw_output}"
 
