@@ -148,7 +148,7 @@ for entry in "${duplicates[@]}"; do
 
 		if [ -n "${filename}" ] && [ -n "${all_entry_filename}" ]; then
 			if [ "${filename}" = "${all_entry_filename}" ]; then
-				typeset dependency_format="${dependency_base_format}/${all_entry##${base_dir}}"
+				typeset dependency_format="$(lazy_canonical_path "${dependency_base_format}/${all_entry##${base_dir}}")"
 				to_files+=( "${dependency_format}" )
 
 				echo "${entry} => ${dependency_format}"
@@ -181,7 +181,7 @@ for all_entry in "${all_files[@]}"; do
 			for i in "${!duplicates[@]}"; do
 				typeset duplicate_entry="${duplicates[${i}]}"
 				echo "checking for duplicate ${duplicate_entry}"
-				typeset duplicate_format="${dependency_base_format}/${duplicate_entry}"
+				typeset duplicate_format="$(lazy_canonical_path "${dependency_base_format}/${duplicate_entry}")"
 
 				if [ -n "${line}" ] && [ -n "${duplicate_format}" ]; then
 					if [ "${line}" = "${duplicate_format}" ]; then

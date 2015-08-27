@@ -143,6 +143,8 @@ x2goclient (4.0.5.1-0x2go1) UNRELEASED; urgency=low
       good enough. Actually construct "the real dependency-format duplicate
       string" and check it against "the real dependency". Even this is still
       not good enough as it needs a bit cleanup - coming up next.
+    - deduplicate.sh: cleanup as announced in the last commit - using
+      lazy_canonical_path.
 
   [ Oleksandr Shneyder ]
   * New upstream release (4.0.5.1):
