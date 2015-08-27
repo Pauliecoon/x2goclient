@@ -171,16 +171,17 @@ for all_entry in "${all_files[@]}"; do
 	typeset otool_out="$(otool -L "${all_entry}")"
 
 	typeset dependencies="$(parse_otool_output "${otool_out}")"
-	if [ "${?}" -eq 0 ]; then
+	echo "parse_otool_output return value: ${?}"
+	if [ "${?}" -eq "0" ]; then
 		typeset line=""
 		while read -r line; do
-			echo "dependency of ${all_entry}: ${line}"
+			#echo "dependency of ${all_entry}: ${line}"
 
 			typeset duplicate_entry=""
 			typeset -i i="0"
 			for i in "${!duplicates[@]}"; do
 				typeset duplicate_entry="${duplicates[${i}]}"
-				echo "checking for duplicate ${duplicate_entry}"
+				#echo "checking for duplicate ${duplicate_entry}"
 				typeset duplicate_format="$(lazy_canonical_path "${dependency_base_format}/${duplicate_entry}")"
 
 				if [ -n "${line}" ] && [ -n "${duplicate_format}" ]; then
