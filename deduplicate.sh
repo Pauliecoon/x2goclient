@@ -133,3 +133,33 @@ for entry in ${duplicates[@]}; do
 		fi
 	done
 done
+
+# Try to fixup files broken by duplicates removal.
+for all_entry in ${all_files[@]}; do
+	typeset otool_out="$(otool -L "${all_entry}")"
+
+	typeset dependencies="$(parse_otool_output "${otool_out}")"
+	if [ "${?}" -eq 0 ]; then
+		typeset line=""
+		while read -r line; do
+			typeset dependencies_filename="$(basename "${line}")"
+
+			typeset duplicate_entry=""
+			for duplicate_entry in ${duplicates[@]}; do
+				typeset duplicate_filename="$(basename "${duplicate_entry}")"
+
+				if [ -n "${dependencies_filename}" ] && [ -n "${duplicate_filename}"]; then
+					
+				else
+					echo "ERROR: empty file name while duplicates with dependencies." >&2
+					echo "ERROR: duplicate entry: \"${duplicate_entry}\"" >&2
+					echo "ERROR: dependency: \"${line}\"" >&2
+					exit 1
+				fi
+			done
+		done <<< "${dependencies}"
+	else
+		echo "ERROR: otool returned error for file: ${all_entry}" >&2
+		exit 1
+	fi
+done

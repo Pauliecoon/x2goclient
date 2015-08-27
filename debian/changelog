@@ -107,6 +107,8 @@ x2goclient (4.0.5.1-0x2go1) UNRELEASED; urgency=low
       library dependencies if no error occurred.
     - deduplicate.sh: non-functional: change WARNING to ERROR in error
       messages.
+    - deduplicate.sh: add first skeleton for library dependency rewriting of
+      deleted duplicates.
 
   [ Oleksandr Shneyder ]
   * New upstream release (4.0.5.1):
