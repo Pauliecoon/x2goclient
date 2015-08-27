@@ -95,7 +95,7 @@ for entry in ${duplicates[@]}; do
 		typeset all_entry="${all_files[${i}]}"
 		typeset relative_path="${all_entry##"${base_dir}/"}"
 		if [ "${relative_path}" = "${entry}" ]; then
-			all_files[${i}]=""
+			unset all_files[${i}]
 		fi
 	done
 done

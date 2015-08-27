@@ -109,6 +109,7 @@ x2goclient (4.0.5.1-0x2go1) UNRELEASED; urgency=low
       messages.
     - deduplicate.sh: add first skeleton for library dependency rewriting of
       deleted duplicates.
+    - deduplicate.sh: correctly unset an array element.
 
   [ Oleksandr Shneyder ]
   * New upstream release (4.0.5.1):
