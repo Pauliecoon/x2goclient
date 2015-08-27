@@ -118,6 +118,8 @@ x2goclient (4.0.5.1-0x2go1) UNRELEASED; urgency=low
       iff any of the strings are present in otool's output and actually handle
       the failure string *ARRAY* correctly as that.
     - deduplicate.sh: change exit to return in parse_otool_output.
+    - deduplicate.sh: record crafted "library path" values in duplicates
+      replacement to_files array.
 
   [ Oleksandr Shneyder ]
   * New upstream release (4.0.5.1):

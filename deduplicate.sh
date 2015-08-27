@@ -117,9 +117,10 @@ for entry in "${duplicates[@]}"; do
 
 		if [ -n "${filename}" ] && [ -n "${all_entry_filename}" ]; then
 			if [ "${filename}" = "${all_entry_filename}" ]; then
-				to_files+=( "${all_entry}" )
+				typeset dependency_format="@executable_path/../Frameworks/${all_entry##${base_dir}}"
+				to_files+=( "${dependency_format}" )
 
-				echo "${entry} => ${all_entry}"
+				echo "${entry} => ${dependency_format}"
 
 				# There should be only one entry matching, so we can save a bit of time and break out of the loop.
 				# Even more importantly, we only want one entry for each duplicates entry anyway...
