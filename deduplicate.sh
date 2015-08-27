@@ -159,8 +159,10 @@ for all_entry in "${all_files[@]}"; do
 				typeset duplicate_entry="${duplicates[${i}]}"
 				typeset duplicate_filename="$(basename "${duplicate_entry}")"
 
-				if [ -n "${dependencies_filename}" ] && [ -n "${duplicate_filename}"]; then
-					
+				if [ -n "${dependencies_filename}" ] && [ -n "${duplicate_filename}" ]; then
+					if [ "${dependencies_filename}" = "${duplicate_filename}" ]; then
+						echo "install_name_tool -change \"${line}\" \"${to_files[${i}]}\""
+					fi
 				else
 					echo "ERROR: empty file name while replacing duplicate dependencies." >&2
 					echo "ERROR: for file ${all_entry}" >&2

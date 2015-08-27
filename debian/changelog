@@ -128,6 +128,7 @@ x2goclient (4.0.5.1-0x2go1) UNRELEASED; urgency=low
       the replacement array.
     - deduplicate.sh: add more useful information in fixup section's error
       message.
+    - deduplicate.sh: unstub fixup section.
 
   [ Oleksandr Shneyder ]
   * New upstream release (4.0.5.1):
