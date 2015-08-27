@@ -40,7 +40,7 @@ while read -r -d '' entry; do
 done < <(find "${base_dir}" -type 'f' -print0)
 
 typeset -a top_files
-for entry in ${all_files[@]}; do
+for entry in "${all_files[@]}"; do
 	typeset relative_path="${entry##"${base_dir}/"}"
 	typeset tmp_regex='^[^/]+$'
 	if [[ "${relative_path}" =~ ${tmp_regex} ]]; then
@@ -50,11 +50,11 @@ for entry in ${all_files[@]}; do
 done
 
 typeset -a duplicates
-for entry in ${all_files[@]}; do
+for entry in "${all_files[@]}"; do
 	typeset relative_path="${entry##"${base_dir}/"}"
 	typeset file_name="$(basename "${entry}")"
 	typeset top_entry=""
-	for top_entry in ${top_files[@]}; do
+	for top_entry in "${top_files[@]}"; do
 		if [ "${top_entry}" != "${relative_path}" ]; then
 			if [ "${file_name}" = "${top_entry}" ]; then
 				echo "Adding duplicate: ${relative_path}"
@@ -65,7 +65,7 @@ for entry in ${all_files[@]}; do
 done
 
 echo "duplicates array before:"
-for entry in ${duplicates[@]}; do
+for entry in "${duplicates[@]}"; do
 	echo "${entry}"
 done
 
@@ -73,7 +73,7 @@ typeset -i i="0"
 for i in "${!duplicates[@]}"; do
 	entry="${duplicates[${i}]}"
 	typeset special_file_regex=""
-	for special_file_regex in ${special_files_regex[@]}; do
+	for special_file_regex in "${special_files_regex[@]}"; do
 		typeset tmp_regex='^'"${special_file_regex}"'$'
 		if [[ "${entry}" =~ ${tmp_regex} ]]; then
 			echo "mv \"${base_dir}/$(basename "${entry}")\" \"${base_dir}/$(dirname "${special_file_regex}")/\""
@@ -84,11 +84,11 @@ for i in "${!duplicates[@]}"; do
 done
 
 echo "duplicates array after:"
-for entry in ${duplicates[@]}; do
+for entry in "${duplicates[@]}"; do
 	echo "${entry}"
 done
 
-for entry in ${duplicates[@]}; do
+for entry in "${duplicates[@]}"; do
 	echo "rm -v ${base_dir}/${entry}"
 	typeset -i i="0"
 	for i in "${!all_files[@]}"; do
@@ -101,18 +101,18 @@ for entry in ${duplicates[@]}; do
 done
 
 echo "New value for all_files:"
-for entry in ${all_files[@]}; do
+for entry in "${all_files[@]}"; do
 	echo "${entry}"
 done
 
 echo "Duplicates-to-real map:"
 # Build complementary array to duplicates.
 typeset -a to_files
-for entry in ${duplicates[@]}; do
+for entry in "${duplicates[@]}"; do
 	typeset filename="$(basename "${entry}")"
 
 	typeset all_entry=""
-	for all_entry in ${all_files[@]}; do
+	for all_entry in "${all_files[@]}"; do
 		typeset all_entry_filename="$(basename "${all_entry}")"
 
 		if [ -n "${filename}" ] && [ -n "${all_entry_filename}" ]; then
@@ -135,7 +135,7 @@ for entry in ${duplicates[@]}; do
 done
 
 # Try to fixup files broken by duplicates removal.
-for all_entry in ${all_files[@]}; do
+for all_entry in "${all_files[@]}"; do
 	typeset otool_out="$(otool -L "${all_entry}")"
 
 	typeset dependencies="$(parse_otool_output "${otool_out}")"

@@ -112,6 +112,8 @@ x2goclient (4.0.5.1-0x2go1) UNRELEASED; urgency=low
     - deduplicate.sh: correctly unset an array element.
     - deduplicate.sh: change range-based for loops to "${!arr[@]}" to handle
       "sparse" arrays correctly.
+    - deduplicate.sh: quote "${arr[@]}" correctly to not suddenly force word
+      splitting.
 
   [ Oleksandr Shneyder ]
   * New upstream release (4.0.5.1):
