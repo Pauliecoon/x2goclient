@@ -6,6 +6,8 @@ base_dir="${1:?"No base dir given."}"
 typeset -a special_files_regex
 special_files_regex+=( "pulseaudio/libpulsecommon-[0-9]\.[0-9]\.dylib" )
 
+typeset -r dependency_base_format='@executable_path/../Frameworks/'
+
 typeset -a otool_fail_str
 otool_fail_str=( "is not an object file"
 		 "can't open file"
@@ -134,7 +136,7 @@ for entry in "${duplicates[@]}"; do
 
 		if [ -n "${filename}" ] && [ -n "${all_entry_filename}" ]; then
 			if [ "${filename}" = "${all_entry_filename}" ]; then
-				typeset dependency_format="@executable_path/../Frameworks/${all_entry##${base_dir}}"
+				typeset dependency_format="${dependency_base_format}/${all_entry##${base_dir}}"
 				to_files+=( "${dependency_format}" )
 
 				echo "${entry} => ${dependency_format}"
