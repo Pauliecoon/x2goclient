@@ -126,9 +126,9 @@ for entry in ${duplicates[@]}; do
 				break
 			fi
 		else
-			echo "WARNING: empty file name while matching duplicates with non-duplicates." >&2
-			echo "WARNING: duplicate entry: \"${entry}\"" >&2
-			echo "WARNING: real entry: \"${all_entry}\"" >&2
+			echo "ERROR: empty file name while matching duplicates with non-duplicates." >&2
+			echo "ERROR: duplicate entry: \"${entry}\"" >&2
+			echo "ERROR: real entry: \"${all_entry}\"" >&2
 			exit 1
 		fi
 	done
