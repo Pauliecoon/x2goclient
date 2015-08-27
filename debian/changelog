@@ -131,6 +131,8 @@ x2goclient (4.0.5.1-0x2go1) UNRELEASED; urgency=low
     - deduplicate.sh: unstub fixup section.
     - deduplicate.sh: parse_otool_output: jump over first matching entry,
       which is - hopefully - the id line.
+    - deduplicate.sh: actually include file name in install_name_tool pseudo
+      output.
 
   [ Oleksandr Shneyder ]
   * New upstream release (4.0.5.1):

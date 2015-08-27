@@ -170,7 +170,7 @@ for all_entry in "${all_files[@]}"; do
 
 				if [ -n "${dependencies_filename}" ] && [ -n "${duplicate_filename}" ]; then
 					if [ "${dependencies_filename}" = "${duplicate_filename}" ]; then
-						echo "install_name_tool -change \"${line}\" \"${to_files[${i}]}\""
+						echo "install_name_tool -change \"${line}\" \"${to_files[${i}]}\" \"${all_entry}\""
 					fi
 				else
 					echo "ERROR: empty file name while replacing duplicate dependencies." >&2
