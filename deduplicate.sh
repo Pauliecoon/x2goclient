@@ -14,7 +14,7 @@ otool_fail_str=( "is not an object file"
 		 "Archive : " )
 
 parse_otool_output() {
-set -x
+#set -x
 	typeset raw_output="${@}"
 
 	typeset fail_str=""
@@ -48,7 +48,7 @@ set -x
 	done <<< "${raw_output}"
 
 	IFS="${oldifs}"
-set +x
+#set +x
 	return 0
 }
 
