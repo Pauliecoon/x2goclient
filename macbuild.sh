@@ -160,7 +160,7 @@ if type -P port >/dev/null 2>&1; then
   MACPORTS_PREFIX_SEARCH="$(type -P port)"
   MACPORTS_PREFIX_SEARCH="${MACPORTS_PREFIX_SEARCH%%bin/port}"
 else
-  # Port not being part find in ${PATH} doesn't necessarily mean it isn't available.
+  # Port not being found in ${PATH} doesn't necessarily mean it isn't available.
   # Try to guess.
   MACPORTS_PREFIX_SEARCH="/opt/local/"
 fi
