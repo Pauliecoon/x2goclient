@@ -147,6 +147,8 @@ x2goclient (4.0.5.1-0x2go1) UNRELEASED; urgency=low
       lazy_canonical_path.
     - deduplicate.sh: remove a bit of noisy debug output, but turn on
       parse_otool_output debugging.
+    - deduplicate.sh: fix wrong return value capture. We want to check the
+      return value of the executed function/command, not that of "typeset".
 
   [ Oleksandr Shneyder ]
   * New upstream release (4.0.5.1):

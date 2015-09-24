@@ -170,8 +170,12 @@ done
 for all_entry in "${all_files[@]}"; do
 	typeset otool_out="$(otool -L "${all_entry}")"
 
-	typeset dependencies="$(parse_otool_output "${otool_out}")"
-	echo "parse_otool_output return value: ${?}"
+	# Don't merge the declaration and initialization with the real value assignment.
+	# We need the return value of parse_otool_output(), but running
+	# typeset foo="$(bar)" will give us the return value of typeset, not bar().
+	typeset dependencies=""
+	dependencies="$(parse_otool_output "${otool_out}")"
+
 	if [ "${?}" -eq "0" ]; then
 		typeset line=""
 		while read -r line; do
