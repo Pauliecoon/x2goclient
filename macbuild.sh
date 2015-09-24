@@ -1,98 +1,98 @@
 #!/bin/bash
 
 make_boolean() {
-	OPTION="${1}"
+  OPTION="${1}"
 
-	case "${OPTION}" in
-		("0"|"no"|""|"No"|"nO"|"NO"|"false"|"FALSE") OPTION="0";;
-		(*) OPTION="1";;
-	esac
+  case "${OPTION}" in
+    ("0"|"no"|""|"No"|"nO"|"NO"|"false"|"FALSE") OPTION="0";;
+    (*) OPTION="1";;
+  esac
 
-	printf "${OPTION}"
+  printf "${OPTION}"
 }
 
 phase() {
-	echo
-	echo "***"
-	echo "*** ${1}..."
-	echo "***"
-	echo
+  echo
+  echo "***"
+  echo "*** ${1}..."
+  echo "***"
+  echo
 }
 
 usage() {
-	exec >&2
+  exec >&2
 
-	NO_VAL="0, no, NO, No, nO, false or FALSE"
-	printf "$(basename ${0}): usage\n\n"
-	printf "Accepted environment variables:\n"
-	printf "\tSDK:\t\t\t\tsets the target SDK [string]\n\t\t\t\t\tdefault: /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk\n"
-	printf "\tMACOSX_DEPLOYMENT_TARGET:\tsets the deployment target (specific OS X version to optimize/build for) [string]\n\t\t\t\t\tdefault: 10.7\n"
-	printf "\tDEBUG\t\t\t\tenables or disables debug builds [boolean]\n\t\t\t\t\tdefault: disabled\n"
-	printf "\tBUNDLE\t\t\t\tenables or disables library bundling and the creation of a .dmg installer [boolean]\n\t\t\t\t\tdefault: enabled\n"
-	printf "\tUNIVERSAL\t\t\tenables or disables x86 support. x86_64 support is always enabled [boolean]\n\t\t\t\t\tdefault: enabled\n"
-	printf "\tMACPORTS_PREFIX\t\t\tsets the (MacPorts) prefix used to detect PulseAudio and nxproxy binaries\n\t\t\t\t\tdefault: /opt/local/\n"
-	printf "\n"
-	printf "Boolean values help:\n"
-	printf "\ta value of ${NO_VAL} will be treated as false\n"
-	printf "\tany other value will be treated as true\n"
+  NO_VAL="0, no, NO, No, nO, false or FALSE"
+  printf "$(basename ${0}): usage\n\n"
+  printf "Accepted environment variables:\n"
+  printf "\tSDK:\t\t\t\tsets the target SDK [string]\n\t\t\t\t\tdefault: /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk\n"
+  printf "\tMACOSX_DEPLOYMENT_TARGET:\tsets the deployment target (specific OS X version to optimize/build for) [string]\n\t\t\t\t\tdefault: 10.7\n"
+  printf "\tDEBUG\t\t\t\tenables or disables debug builds [boolean]\n\t\t\t\t\tdefault: disabled\n"
+  printf "\tBUNDLE\t\t\t\tenables or disables library bundling and the creation of a .dmg installer [boolean]\n\t\t\t\t\tdefault: enabled\n"
+  printf "\tUNIVERSAL\t\t\tenables or disables x86 support. x86_64 support is always enabled [boolean]\n\t\t\t\t\tdefault: enabled\n"
+  printf "\tMACPORTS_PREFIX\t\t\tsets the (MacPorts) prefix used to detect PulseAudio and nxproxy binaries\n\t\t\t\t\tdefault: /opt/local/\n"
+  printf "\n"
+  printf "Boolean values help:\n"
+  printf "\ta value of ${NO_VAL} will be treated as false\n"
+  printf "\tany other value will be treated as true\n"
 
-	exit 2
+  exit 2
 }
 
 dependency_error() {
-	exec >&2
+  exec >&2
 
-	typeset element="${1}"; shift
-	typeset component="${1}"; shift
-	typeset type="${1}"; shift
+  typeset element="${1}"; shift
+  typeset component="${1}"; shift
+  typeset type="${1}"; shift
 
-	echo "${element} ${type} not found."
-	echo "Install ${component} -- e.g., via "port -vt install ${component}" if using MacPorts."
-	echo "If ${component} is already installed, try passing MACPORTS_PREFIX if the autodetected or default value (${MACPORTS_PREFIX}) does not match your setup."
+  echo "${element} ${type} not found."
+  echo "Install ${component} -- e.g., via "port -vt install ${component}" if using MacPorts."
+  echo "If ${component} is already installed, try passing MACPORTS_PREFIX if the autodetected or default value (${MACPORTS_PREFIX}) does not match your setup."
 
-	exit 3
+  exit 3
 }
 
 lazy_canonical_path() {
-	typeset path="${1}"
+  typeset path="${1}"
 
-	typeset old_path=""
-	while [ "${old_path}" != "${path}" ]; do
-		old_path="${path}"
-		path="${path//\/\///}"
-	done
+  typeset old_path=""
+  while [ "${old_path}" != "${path}" ]; do
+    old_path="${path}"
+    path="${path//\/\///}"
+  done
 
-	printf "${old_path}"
+  printf "${old_path}"
 }
 
 get_nesting_level() {
 set -x
-	typeset -i level=0
-	typeset path="${1}"
+  typeset -i level=0
+  typeset path="${1}"
 
-	while [ -n "${path}" ] && [ "${path}" != "." ] && [ "${path}" != "/" ]; do
-		i="$((${i} + 1))"
-		path="$(dirname "${path}")"
-	done
+  while [ -n "${path}" ] && [ "${path}" != "." ] && [ "${path}" != "/" ]; do
+    i="$((${i} + 1))"
+    path="$(dirname "${path}")"
+  done
 
-	printf "${level}"
+  printf "${level}"
 set +x
 }
 
 repeat_str() { # INPUT COUNT
-	typeset INPUT="${1:?"Error: no input string passed to ${FUNCNAME}()."}"
-	typeset COUNT="${2:?"Error: no count passed to ${FUNCNAME}()."}"
+  typeset INPUT="${1:?"Error: no input string passed to ${FUNCNAME}()."}"
+  typeset COUNT="${2:?"Error: no count passed to ${FUNCNAME}()."}"
 
-	typeset ret=""
-	typeset -i i=0
-	while [ "${i}" -lt "${COUNT}" ]; do
-		ret="${ret}$(printf "${INPUT}")"
-		i=$((${i} + 1))
-	done
+  typeset ret=""
+  typeset -i i=0
+  while [ "${i}" -lt "${COUNT}" ]; do
+    ret="${ret}$(printf "${INPUT}")"
+    i=$((${i} + 1))
+  done
 
-	printf "${ret}"
+  printf "${ret}"
 
-	return 0
+  return 0
 }
 
 MATCH_HELP='(^((-h)|(--help))([ 	]|$))|([ 	]+((-h)|(--help))([ 	]|$))'
@@ -113,12 +113,12 @@ PKG_DMG="${TOP_DIR}/pkg-dmg"
 # Try to find the MacPorts prefix.
 typeset MACPORTS_PREFIX_SEARCH=""
 if type -P port >/dev/null 2>&1; then
-	MACPORTS_PREFIX_SEARCH="$(type -P port)"
-	MACPORTS_PREFIX_SEARCH="${MACPORTS_PREFIX_SEARCH%%bin/port}"
+  MACPORTS_PREFIX_SEARCH="$(type -P port)"
+  MACPORTS_PREFIX_SEARCH="${MACPORTS_PREFIX_SEARCH%%bin/port}"
 else
-	# Port not being part find in ${PATH} doesn't necessarily mean it isn't available.
-	# Try to guess.
-	MACPORTS_PREFIX_SEARCH="/opt/local/"
+  # Port not being part find in ${PATH} doesn't necessarily mean it isn't available.
+  # Try to guess.
+  MACPORTS_PREFIX_SEARCH="/opt/local/"
 fi
 
 NXPROXY="nxproxy"
@@ -150,11 +150,11 @@ SDK_MINOR_VERSION="$(/usr/bin/perl -pe 's#.*?10\.(\d+).*?\.sdk$#\1#' <<< "${SDK}
 
 MATCH_NUMBERS='^[0-9]+$'
 if [[ "${SDK_MINOR_VERSION}" =~ ${MATCH_NUMBERS} ]]; then
-	[ "${SDK_MINOR_VERSION}" -gt "6" ] && STDLIB="libstdc++"
-	[ "${SDK_MINOR_VERSION}" -gt "8" ] && STDLIB="libc++"
+  [ "${SDK_MINOR_VERSION}" -gt "6" ] && STDLIB="libstdc++"
+  [ "${SDK_MINOR_VERSION}" -gt "8" ] && STDLIB="libc++"
 else
-	echo "Unable to determine OS X version. Unknown value '${SDK_MINOR_VERSION}'." >&2
-	exit 1
+  echo "Unable to determine OS X version. Unknown value '${SDK_MINOR_VERSION}'." >&2
+  exit 1
 fi
 
 # Gather files.
@@ -168,14 +168,14 @@ typeset -a PULSEAUDIO_BINARIES_FULL
 typeset cur_binary
 fail="0"
 for cur_binary in ${PULSEAUDIO_BINARIES[@]}; do
-	cur_binary="$(lazy_canonical_path "${MACPORTS_PREFIX}/bin/${cur_binary}")"
+  cur_binary="$(lazy_canonical_path "${MACPORTS_PREFIX}/bin/${cur_binary}")"
 
-	if [ -x "${cur_binary}" ]; then
-		PULSEAUDIO_BINARIES_FULL+=( "${cur_binary}" )
-	else
-		fail="1"
-		break
-	fi
+  if [ -x "${cur_binary}" ]; then
+    PULSEAUDIO_BINARIES_FULL+=( "${cur_binary}" )
+  else
+    fail="1"
+    break
+  fi
 done
 
 [ "${fail}" -eq "1" ] && dependency_error "${cur_binary##"$(lazy_canonical_path "${MACPORTS_PREFIX}/bin/")"}" "pulseaudio" "binary"
@@ -184,37 +184,37 @@ typeset cur_lib_or_libdir
 typeset -a PULSEAUDIO_LIBRARIES_FULL
 fail="0"
 for cur_lib_or_libdir in ${PULSEAUDIO_LIBRARIES[@]}; do
-	cur_lib_or_libdir="$(lazy_canonical_path "${MACPORTS_PREFIX}/lib/${cur_lib_or_libdir}")"
+  cur_lib_or_libdir="$(lazy_canonical_path "${MACPORTS_PREFIX}/lib/${cur_lib_or_libdir}")"
 
-	if [ ! -d "${cur_lib_or_libdir}" ] && [ -x "${cur_lib_or_libdir}" ]; then
-		echo "Adding ${cur_lib_or_libdir} to \${PULSEAUDIO_LIBRARIES_FULL}"
-		PULSEAUDIO_LIBRARIES_FULL+=( "${cur_lib_or_libdir}" )
-	elif [ -d "${cur_lib_or_libdir}" ]; then
-		# That's a directory... more work needed here.
-		echo "Scrubbing directory ${cur_lib_or_libdir}"
-		typeset entry=""
+  if [ ! -d "${cur_lib_or_libdir}" ] && [ -x "${cur_lib_or_libdir}" ]; then
+    echo "Adding ${cur_lib_or_libdir} to \${PULSEAUDIO_LIBRARIES_FULL}"
+    PULSEAUDIO_LIBRARIES_FULL+=( "${cur_lib_or_libdir}" )
+  elif [ -d "${cur_lib_or_libdir}" ]; then
+    # That's a directory... more work needed here.
+    echo "Scrubbing directory ${cur_lib_or_libdir}"
+    typeset entry=""
 
-		# -r parameter to read: Backslashes may NOT escape any characters!
-		# -d '': specifies the delimiter to be used - as '' resolves to an empty string followed
-		#        by a NUL character, the delimiter is set to this very NUL (\000) character.
-		while read -r -d '' entry; do
-			typeset cur_file="$(basename "${entry}")"
-			typeset TMP_REGEX='^.*\.(\.[0-9]+){0,2}(so|dylib|bundle)$'
+    # -r parameter to read: Backslashes may NOT escape any characters!
+    # -d '': specifies the delimiter to be used - as '' resolves to an empty string followed
+    #        by a NUL character, the delimiter is set to this very NUL (\000) character.
+    while read -r -d '' entry; do
+      typeset cur_file="$(basename "${entry}")"
+      typeset TMP_REGEX='^.*\.(\.[0-9]+){0,2}(so|dylib|bundle)$'
 
-			# This is only here should the PA build system ever break and create
-			# "linux-style" library file names. Let's hope it never actually comes to that.
-			typeset TMP_REGEX_LINUX_COMPAT='^.*\.(so|dylib|bundle)(\.[0-9]+){0,2}$'
+      # This is only here should the PA build system ever break and create
+      # "linux-style" library file names. Let's hope it never actually comes to that.
+      typeset TMP_REGEX_LINUX_COMPAT='^.*\.(so|dylib|bundle)(\.[0-9]+){0,2}$'
 
-			if [[ "${cur_file}" =~ ${TMP_REGEX} ]] || [[ "${cur_file}" =~ ${TMP_REGEX_LINUX_COMPAT} ]]; then
-				# Filename matched the expected template.
-				echo "Adding $(lazy_canonical_path "${entry}") to \${PULSEAUDIO_LIBRARIES_FULL}"
-				PULSEAUDIO_LIBRARIES_FULL+=( "$(lazy_canonical_path "${entry}")" )
-			fi
-		done < <(find "${cur_lib_or_libdir}" -type 'f' -print0)
-	else
-		fail="1"
-		break
-	fi
+      if [[ "${cur_file}" =~ ${TMP_REGEX} ]] || [[ "${cur_file}" =~ ${TMP_REGEX_LINUX_COMPAT} ]]; then
+        # Filename matched the expected template.
+        echo "Adding $(lazy_canonical_path "${entry}") to \${PULSEAUDIO_LIBRARIES_FULL}"
+        PULSEAUDIO_LIBRARIES_FULL+=( "$(lazy_canonical_path "${entry}")" )
+      fi
+    done < <(find "${cur_lib_or_libdir}" -type 'f' -print0)
+  else
+    fail="1"
+    break
+  fi
 done
 
 [ "${fail}" -eq "1" ] && dependency_error "${cur_lib_or_libdir}" "pulseaudio" "library or library directory"
@@ -241,10 +241,10 @@ lrelease "${PROJECT}"
 
 phase "Running qmake"
 qmake -config "${BUILD_MODE}" -spec macx-g++ "${PROJECT}" \
-	CONFIG+="${BUILD_ARCH}" \
-	QMAKE_MAC_SDK="${SDK}" \
-	QMAKE_MACOSX_DEPLOYMENT_TARGET="${MACOSX_DEPLOYMENT_TARGET}" \
-	OSX_STDLIB="${STDLIB}"
+      CONFIG+="${BUILD_ARCH}" \
+      QMAKE_MAC_SDK="${SDK}" \
+      QMAKE_MACOSX_DEPLOYMENT_TARGET="${MACOSX_DEPLOYMENT_TARGET}" \
+      OSX_STDLIB="${STDLIB}"
 
 phase "Running make"
 make -j2
@@ -257,84 +257,84 @@ cp -av "${NXPROXY}" "${EXE_DIR}/"
 
 phase "Copying PulseAudio"
 for cur_binary in ${PULSEAUDIO_BINARIES_FULL[@]}; do
-	cp -av "${cur_binary}" "${EXE_DIR}/"
+  cp -av "${cur_binary}" "${EXE_DIR}/"
 done
 
 typeset intermediate_lib_dir=""
 for cur_binary in ${PULSEAUDIO_LIBRARIES_FULL[@]}; do
 set -x
-	intermediate_lib_dir="$(lazy_canonical_path "$(dirname "${cur_binary}")/")"
-	intermediate_lib_dir="${intermediate_lib_dir##"$(lazy_canonical_path "${MACPORTS_PREFIX}/lib/")"}"
+  intermediate_lib_dir="$(lazy_canonical_path "$(dirname "${cur_binary}")/")"
+  intermediate_lib_dir="${intermediate_lib_dir##"$(lazy_canonical_path "${MACPORTS_PREFIX}/lib/")"}"
 
-	mkdir -p "${FRAMEWORKS_DIR}/${intermediate_lib_dir}/"
+  mkdir -p "${FRAMEWORKS_DIR}/${intermediate_lib_dir}/"
 
-	cp -av "${cur_binary}" "${FRAMEWORKS_DIR}/${intermediate_lib_dir}/"
+  cp -av "${cur_binary}" "${FRAMEWORKS_DIR}/${intermediate_lib_dir}/"
 set +x
 done
 
 if [ "${BUNDLE}" = "1" ]; then
-	phase "Bundling nxproxy"
-	dylibbundler \
-		--fix-file "${EXE_DIR}/nxproxy" \
-		--bundle-deps \
-		--dest-dir "${FRAMEWORKS_DIR}/" \
-		--install-path "@executable_path/../Frameworks/" \
-		--create-dir
+  phase "Bundling nxproxy"
+  dylibbundler \
+    --fix-file "${EXE_DIR}/nxproxy" \
+    --bundle-deps \
+    --dest-dir "${FRAMEWORKS_DIR}/" \
+    --install-path "@executable_path/../Frameworks/" \
+    --create-dir
 
-	phase "Bundling PulseAudio"
-	typeset cur_binary_name=""
-	for cur_binary in ${PULSEAUDIO_BINARIES_FULL[@]}; do
-		if [ ! -L "${cur_binary}" ]; then
-			cur_binary_name="$(basename "${cur_binary}")"
-			dylibbundler \
-				--fix-file "${EXE_DIR}/${cur_binary_name}" \
-				--bundle-deps \
-				--dest-dir "${FRAMEWORKS_DIR}/" \
-				--install-path "@executable_path/../Frameworks/" \
-				--create-dir \
-				--overwrite-files
-		fi
-	done
+  phase "Bundling PulseAudio"
+  typeset cur_binary_name=""
+  for cur_binary in ${PULSEAUDIO_BINARIES_FULL[@]}; do
+    if [ ! -L "${cur_binary}" ]; then
+      cur_binary_name="$(basename "${cur_binary}")"
+      dylibbundler \
+        --fix-file "${EXE_DIR}/${cur_binary_name}" \
+        --bundle-deps \
+        --dest-dir "${FRAMEWORKS_DIR}/" \
+        --install-path "@executable_path/../Frameworks/" \
+        --create-dir \
+        --overwrite-files
+    fi
+  done
 
-	typeset intermediate_lib_dir=""
-	for cur_binary in ${PULSEAUDIO_LIBRARIES_FULL[@]}; do
-		intermediate_lib_dir="$(lazy_canonical_path "$(dirname "${cur_binary}")/")"
-		intermediate_lib_dir="${intermediate_lib_dir##"$(lazy_canonical_path "${MACPORTS_PREFIX}/lib/")"}"
+  typeset intermediate_lib_dir=""
+  for cur_binary in ${PULSEAUDIO_LIBRARIES_FULL[@]}; do
+    intermediate_lib_dir="$(lazy_canonical_path "$(dirname "${cur_binary}")/")"
+    intermediate_lib_dir="${intermediate_lib_dir##"$(lazy_canonical_path "${MACPORTS_PREFIX}/lib/")"}"
 
-		if [ ! -L "${cur_binary}" ]; then
-			cur_binary_name="$(basename "${cur_binary}")"
-			echo "Handling ${cur_binary} => ${intermediate_lib_dir}/${cur_binary_name}."
+    if [ ! -L "${cur_binary}" ]; then
+      cur_binary_name="$(basename "${cur_binary}")"
+      echo "Handling ${cur_binary} => ${intermediate_lib_dir}/${cur_binary_name}."
 
-			typeset nesting_level="$(get_nesting_level "${intermediate_lib_dir}")"
+      typeset nesting_level="$(get_nesting_level "${intermediate_lib_dir}")"
 
-			dylibbundler \
-				--fix-file "${FRAMEWORKS_DIR}/${intermediate_lib_dir}/${cur_binary_name}" \
-				--bundle-deps \
-				--dest-dir "${FRAMEWORKS_DIR}/${intermediate_lib_dir}" \
-				--install-path "@executable_path/$(repeat_str "../" "${nesting_level}")../Frameworks/${intermediate_lib_dir}" \
-				--create-dir \
-				--overwrite-files
-		fi
-	done
+      dylibbundler \
+        --fix-file "${FRAMEWORKS_DIR}/${intermediate_lib_dir}/${cur_binary_name}" \
+        --bundle-deps \
+        --dest-dir "${FRAMEWORKS_DIR}/${intermediate_lib_dir}" \
+        --install-path "@executable_path/$(repeat_str "../" "${nesting_level}")../Frameworks/${intermediate_lib_dir}" \
+        --create-dir \
+        --overwrite-files
+    fi
+  done
 
-	phase "Bundling up using macdeployqt"
-	macdeployqt "${APPBUNDLE}" -verbose=2
+  phase "Bundling up using macdeployqt"
+  macdeployqt "${APPBUNDLE}" -verbose=2
 
-	phase "Creating DMG"
-	${PKG_DMG} \
-		--source "${APPBUNDLE}" \
-		--sourcefile \
-		--target "${DMGFILE}" \
-		--volname "x2goclient" \
-		--verbosity 2 \
-		--mkdir "/.background" \
-		--copy "${TOP_DIR}/res/img/png/macinstaller_background.png:/.background" \
-		--copy "${TOP_DIR}/res/osxbundle/macdmg.DS_Store:/.DS_Store" \
-		--copy "${TOP_DIR}/LICENSE" \
-		--copy "${TOP_DIR}/COPYING" \
-		--symlink "/Applications: " \
-		--icon "${TOP_DIR}/res/img/icons/x2go-mac.icns" \
-		--format "UDBZ"
+  phase "Creating DMG"
+  ${PKG_DMG} \
+    --source "${APPBUNDLE}" \
+    --sourcefile \
+    --target "${DMGFILE}" \
+    --volname "x2goclient" \
+    --verbosity 2 \
+    --mkdir "/.background" \
+    --copy "${TOP_DIR}/res/img/png/macinstaller_background.png:/.background" \
+    --copy "${TOP_DIR}/res/osxbundle/macdmg.DS_Store:/.DS_Store" \
+    --copy "${TOP_DIR}/LICENSE" \
+    --copy "${TOP_DIR}/COPYING" \
+    --symlink "/Applications: " \
+    --icon "${TOP_DIR}/res/img/icons/x2go-mac.icns" \
+    --format "UDBZ"
 fi
 
 popd

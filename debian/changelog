@@ -151,6 +151,7 @@ x2goclient (4.0.5.1-0x2go1) UNRELEASED; urgency=low
       return value of the executed function/command, not that of "typeset".
     - deduplicate.sh: add WARNING to status message.
     - deduplicate.sh: remove some noisy debug output.
+    - macbuild.sh: replace tabs with two spaces. No functional changes.
 
   [ Oleksandr Shneyder ]
   * New upstream release (4.0.5.1):
