@@ -203,7 +203,7 @@ for all_entry in "${all_files[@]}"; do
 			done
 		done <<< "${dependencies}"
 	else
-		echo "ERROR: otool returned error for file: ${all_entry}" >&2
-		exit 1
+		echo "WARNING: otool returned error for file: ${all_entry}" >&2
+		echo "WARNING: skipping." >&2
 	fi
 done
