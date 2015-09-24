@@ -153,6 +153,8 @@ x2goclient (4.0.5.1-0x2go1) UNRELEASED; urgency=low
     - deduplicate.sh: remove some noisy debug output.
     - macbuild.sh: replace tabs with two spaces. No functional changes.
     - deduplicate.sh: replace tabs with two spaces. No functional changes.
+    - macbuild.sh: merge deduplicate.sh content in. Also enable the
+      functionality "for real", not just as a dry-run.
 
   [ Oleksandr Shneyder ]
   * New upstream release (4.0.5.1):
