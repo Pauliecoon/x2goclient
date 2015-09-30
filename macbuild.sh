@@ -413,7 +413,7 @@ if [ "${BUNDLE}" = "1" ]; then
     for special_file_regex in "${special_files_regex[@]}"; do
       typeset tmp_regex='^'"${special_file_regex}"'$'
       if [[ "${entry}" =~ ${tmp_regex} ]]; then
-        mv -v "${base_dir}/$(basename "${entry}")" "${base_dir}/$(dirname "${special_file_regex}")/"
+        cp -v "${base_dir}/$(basename "${entry}")" "${base_dir}/$(dirname "${special_file_regex}")/"
         duplicates[${i}]="$(basename "${entry}")"
         echo "Renamed ${entry} in duplicates array to ${duplicates[${i}]}"
       fi
