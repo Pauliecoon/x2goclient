@@ -156,6 +156,7 @@ x2goclient (4.0.5.1-0x2go1) UNRELEASED; urgency=low
     - macbuild.sh: merge deduplicate.sh content in. Also enable the
       functionality "for real", not just as a dry-run.
     - macbuild.sh: spelling fix.
+    - macbuild.sh: more more debug messages and a whitespace change.
 
   [ Oleksandr Shneyder ]
   * New upstream release (4.0.5.1):

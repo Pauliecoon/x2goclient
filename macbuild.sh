@@ -113,7 +113,6 @@ parse_otool_output() {
 
   typeset tmp_regex='^[[:space:]]+(.*)[[:space:]]\(compatibility version .*, current version .*\)'
 
-
   # In this special case, we do not want read to perform any word splitting.
   typeset oldifs="${IFS}"
   IFS=''
@@ -372,6 +371,7 @@ if [ "${BUNDLE}" = "1" ]; then
   typeset -a all_files
   typeset entry=""
   while read -r -d '' entry; do
+    echo "Adding ${entry} to all files"
     all_files+=( "${entry}" )
   done < <(find "${base_dir}" -type 'f' -print0)
 
@@ -379,6 +379,7 @@ if [ "${BUNDLE}" = "1" ]; then
   for entry in "${all_files[@]}"; do
     typeset relative_path="${entry##"${base_dir}/"}"
     typeset tmp_regex='^[^/]+$'
+    echo "Checking ${relative_path} against regex '${tmp_regex}'"
     if [[ "${relative_path}" =~ ${tmp_regex} ]]; then
       echo "${relative_path} is top file, adding to array."
       top_files+=( "${relative_path}" )
