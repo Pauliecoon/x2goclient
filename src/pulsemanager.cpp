@@ -25,243 +25,243 @@
 #endif
 
 PulseManager::PulseManager () {
-    pulse_X2Go_ = "/.x2go/pulse";
+  pulse_X2Go_ = "/.x2go/pulse";
 
-    pulse_dir_ = QDir (QDir::homePath ());
-    pulse_dir_.mkpath (pulse_dir_.absolutePath () + pulse_X2Go_ + "/tmp");
-    pulse_dir_.cd (pulse_X2Go_.mid (1));
+  pulse_dir_ = QDir (QDir::homePath ());
+  pulse_dir_.mkpath (pulse_dir_.absolutePath () + pulse_X2Go_ + "/tmp");
+  pulse_dir_.cd (pulse_X2Go_.mid (1));
 
-    env_ = QProcessEnvironment::systemEnvironment ();
-    env_.insert ("HOME", pulse_dir_.absolutePath ());
-    env_.insert ("TEMP", pulse_dir_.absolutePath () + "/tmp");
+  env_ = QProcessEnvironment::systemEnvironment ();
+  env_.insert ("HOME", pulse_dir_.absolutePath ());
+  env_.insert ("TEMP", pulse_dir_.absolutePath () + "/tmp");
 
-    pulse_port_ = 4713;
+  pulse_port_ = 4713;
 
-    state_ = QProcess::NotRunning;
+  state_ = QProcess::NotRunning;
 
-    pulse_server_ = NULL;
+  pulse_server_ = NULL;
 
-    app_dir_ = QApplication::applicationDirPath ();
+  app_dir_ = QApplication::applicationDirPath ();
 }
 
 PulseManager::~PulseManager () {
-    if (pulse_server_ && is_server_running ())
-        shutdown ();
+  if (pulse_server_ && is_server_running ())
+    shutdown ();
 
-    delete (pulse_server_);
+  delete (pulse_server_);
 }
 
 void PulseManager::start () {
-    assert (!is_server_running ());
+  assert (!is_server_running ());
 
-    delete (pulse_server_);
+  delete (pulse_server_);
 
-    pulse_server_ = new QProcess (0);
-    state_ = QProcess::Starting;
+  pulse_server_ = new QProcess (0);
+  state_ = QProcess::Starting;
 
 #ifdef Q_OS_DARWIN
-    start_osx ();
+  start_osx ();
 #elif defined (Q_OS_WIN)
-    start_win ();
+  start_win ();
 #elif defined (Q_OS_LINUX)
-    start_linux ();
+  start_linux ();
 #endif
 }
 
 void PulseManager::start_osx () {
-    find_port ();
+  find_port ();
 
-    if (generate_server_config () && generate_client_config ()) {
-        cleanup_client_dir ();
+  if (generate_server_config () && generate_client_config ()) {
+    cleanup_client_dir ();
 
-        pulse_server_->setProcessEnvironment (env_);
+    pulse_server_->setProcessEnvironment (env_);
 
-        QStringList args;
-        args << "--exit-idle-time=-1" << "-n"
-             << "-F" << pulse_dir_.absolutePath () + "/config.pa"
-             << "-p"
-             << QDir (app_dir_
-                      + "/../Frameworks/pulse-2.0/modules").absolutePath ()
-             << "--high-priority";
+    QStringList args;
+    args << "--exit-idle-time=-1" << "-n"
+         << "-F" << pulse_dir_.absolutePath () + "/config.pa"
+         << "-p"
+         << QDir (app_dir_
+                  + "/../Frameworks/pulse-2.0/modules").absolutePath ()
+         << "--high-priority";
 #ifdef DEBUG
-        args << "--log-level=debug";
+    args << "--log-level=debug";
 #endif
 
-        pulse_server_->setWorkingDirectory (app_dir_ + "/../exe/");
-        pulse_server_->start (app_dir_ + "/../exe/pulseaudio", args);
+    pulse_server_->setWorkingDirectory (app_dir_ + "/../exe/");
+    pulse_server_->start (app_dir_ + "/../exe/pulseaudio", args);
 
-        if (pulse_server_->waitForStarted ()) {
-            x2goDebug << "pulse started with" << args << "waiting for finish...";
-            state_ = QProcess::Running;
+    if (pulse_server_->waitForStarted ()) {
+      x2goDebug << "pulse started with" << args << "waiting for finish...";
+      state_ = QProcess::Running;
 
-            connect (pulse_server_, SIGNAL (finished (int)),
-                     this,          SLOT (on_pulse_finished (int)));
+      connect (pulse_server_, SIGNAL (finished (int)),
+               this,          SLOT (on_pulse_finished (int)));
 
 #ifdef DEBUG
-            // Give PA a little time to come up.
-            QTimer::singleShot (5000, this, SLOT (slot_play_startup_sound ()));
+      // Give PA a little time to come up.
+      QTimer::singleShot (5000, this, SLOT (slot_play_startup_sound ()));
 #endif
-        }
     }
+  }
 }
 
 void PulseManager::find_port () {
-    QTcpSocket tcpSocket (0);
-    bool free = false;
+  QTcpSocket tcpSocket (0);
+  bool free = false;
 
-    do {
-        tcpSocket.connectToHost ("127.0.0.1", pulse_port_);
+  do {
+    tcpSocket.connectToHost ("127.0.0.1", pulse_port_);
 
-        if (tcpSocket.waitForConnected (1000)) {
-            tcpSocket.close ();
-            free = false;
-            ++pulse_port_;
-        }
-        else
-            free = true;
-    } while (!free);
+    if (tcpSocket.waitForConnected (1000)) {
+      tcpSocket.close ();
+      free = false;
+      ++pulse_port_;
+    }
+    else
+      free = true;
+  } while (!free);
 }
 
 bool PulseManager::generate_server_config () {
-    QString config_file_name = pulse_dir_.absolutePath () + "/config.pa";
-    QTemporaryFile config_tmp_file (pulse_dir_.absolutePath () + "/tmp/tmpconfig");
-    X2goSettings settings ("settings");
-    bool disable_input = false;
-    bool ret = false;
+  QString config_file_name = pulse_dir_.absolutePath () + "/config.pa";
+  QTemporaryFile config_tmp_file (pulse_dir_.absolutePath () + "/tmp/tmpconfig");
+  X2goSettings settings ("settings");
+  bool disable_input = false;
+  bool ret = false;
 
-    disable_input = settings.setting ()->value ("soundnoinput",
-                                                (QVariant) false).toBool ();
+  disable_input = settings.setting ()->value ("soundnoinput",
+                                              (QVariant) false).toBool ();
 
-    if (config_tmp_file.open ()) {
-        QTextStream config_tmp_file_stream (&config_tmp_file);
+  if (config_tmp_file.open ()) {
+    QTextStream config_tmp_file_stream (&config_tmp_file);
 
-        config_tmp_file_stream << "load-module module-native-protocol-tcp port=" +
-                               QString::number (pulse_port_) << endl;
-        config_tmp_file_stream << "load-module module-native-protocol-unix" << endl;
-        config_tmp_file_stream << "load-module module-coreaudio-detect";
+    config_tmp_file_stream << "load-module module-native-protocol-tcp port="
+                            + QString::number (pulse_port_) << endl;
+    config_tmp_file_stream << "load-module module-native-protocol-unix" << endl;
+    config_tmp_file_stream << "load-module module-coreaudio-detect";
 
-        if (disable_input)
-            config_tmp_file_stream << " record=0";
+    if (disable_input)
+      config_tmp_file_stream << " record=0";
 
-        config_tmp_file_stream << endl;
+    config_tmp_file_stream << endl;
 
-        QFile config_file (config_file_name);
-        if (QFile::exists (config_file_name))
-            QFile::remove (config_file_name);
+    QFile config_file (config_file_name);
+    if (QFile::exists (config_file_name))
+      QFile::remove (config_file_name);
 
-        config_tmp_file.copy (config_file_name);
-        config_tmp_file.remove ();
+    config_tmp_file.copy (config_file_name);
+    config_tmp_file.remove ();
 
-        ret = true;
-    }
+    ret = true;
+  }
 
-    return (ret);
+  return (ret);
 }
 
 bool PulseManager::generate_client_config () {
-    QTemporaryFile client_config_tmp_file (pulse_dir_.absolutePath ()
-                                           + "/tmp/tmpconfig");
-    QString client_config_file_name (pulse_dir_.absolutePath () + "/.pulse/client.conf");
-    bool ret = false;
+  QTemporaryFile client_config_tmp_file (pulse_dir_.absolutePath ()
+                                         + "/tmp/tmpconfig");
+  QString client_config_file_name (pulse_dir_.absolutePath () + "/.pulse/client.conf");
+  bool ret = false;
 
-    if (client_config_tmp_file.open ()) {
-        QTextStream config_tmp_file_stream (&client_config_tmp_file);
+  if (client_config_tmp_file.open ()) {
+    QTextStream config_tmp_file_stream (&client_config_tmp_file);
 
-        config_tmp_file_stream << "autospawn=no" << endl;
-        config_tmp_file_stream << "daemon-binary="
-                               << QDir (app_dir_
-                                        + "/../exe/pulseaudio").absolutePath ()
-                               << endl;
+    config_tmp_file_stream << "autospawn=no" << endl;
+    config_tmp_file_stream << "daemon-binary="
+                           << QDir (app_dir_
+                                    + "/../exe/pulseaudio").absolutePath ()
+                           << endl;
 
-        if (QFile::exists (client_config_file_name))
-            QFile::remove (client_config_file_name);
+    if (QFile::exists (client_config_file_name))
+      QFile::remove (client_config_file_name);
 
-        client_config_tmp_file.copy (client_config_file_name);
-        client_config_tmp_file.remove ();
+    client_config_tmp_file.copy (client_config_file_name);
+    client_config_tmp_file.remove ();
 
-        ret = true;
-    }
+    ret = true;
+  }
 
-    return (ret);
+  return (ret);
 }
 
 void PulseManager::cleanup_client_dir () {
-    // PA expects $HOME/.pulse/$HOST-runtime to be a symbolic link
-    // and will fail, if it's just a plain directory on Mac OS X.
-    // Delete it first.
-    QDir machine_dir (pulse_dir_.absolutePath () + "/.pulse/"
-                      + QHostInfo::localHostName () + "-runtime");
+  // PA expects $HOME/.pulse/$HOST-runtime to be a symbolic link
+  // and will fail, if it's just a plain directory on Mac OS X.
+  // Delete it first.
+  QDir machine_dir (pulse_dir_.absolutePath () + "/.pulse/"
+                    + QHostInfo::localHostName () + "-runtime");
 
-    if (QFile::exists (machine_dir.absolutePath () + "/pid"))
-        QFile::remove (machine_dir.absolutePath () + "/pid");
+  if (QFile::exists (machine_dir.absolutePath () + "/pid"))
+    QFile::remove (machine_dir.absolutePath () + "/pid");
 
-    if (machine_dir.exists ())
-        machine_dir.remove (machine_dir.absolutePath ());
+  if (machine_dir.exists ())
+    machine_dir.remove (machine_dir.absolutePath ());
 }
 
 void PulseManager::slot_play_startup_sound () {
-    QProcess play_file (0);
+  QProcess play_file (0);
 
-    play_file.setWorkingDirectory (pulse_server_->workingDirectory ());
-    play_file.setProcessEnvironment (env_);
-    play_file.start (app_dir_ + "/../exe/paplay "
-                     + app_dir_ + "/../Resources/startup.wav");
+  play_file.setWorkingDirectory (pulse_server_->workingDirectory ());
+  play_file.setProcessEnvironment (env_);
+  play_file.start (app_dir_ + "/../exe/paplay "
+                   + app_dir_ + "/../Resources/startup.wav");
 
-    if (play_file.waitForStarted ())
-        play_file.waitForFinished ();
+  if (play_file.waitForStarted ())
+    play_file.waitForFinished ();
 }
 
 void PulseManager::on_pulse_finished (int exit_code) {
-    if (!exit_code)
-        x2goDebug << "Warning! Pulseaudio's exit code is non-zero.";
+  if (!exit_code)
+    x2goDebug << "Warning! Pulseaudio's exit code is non-zero.";
 
-    QByteArray ba = pulse_server_->readAllStandardOutput ();
-    char *data = ba.data ();
-    std::cout << data;
-    ba = pulse_server_->readAllStandardError ();
-    data = ba.data ();
-    std::cout << data;
+  QByteArray ba = pulse_server_->readAllStandardOutput ();
+  char *data = ba.data ();
+  std::cout << data;
+  ba = pulse_server_->readAllStandardError ();
+  data = ba.data ();
+  std::cout << data;
 
-    state_ = QProcess::NotRunning;
-    emit (sig_pulse_server_terminated ());
+  state_ = QProcess::NotRunning;
+  emit (sig_pulse_server_terminated ());
 }
 
 bool PulseManager::is_server_running () {
-    if (pulse_server_)
-        return (pulse_server_->state () == QProcess::Running);
-    else
-      return (false);
+  if (pulse_server_)
+    return (pulse_server_->state () == QProcess::Running);
+  else
+    return (false);
 }
 
 void PulseManager::shutdown () {
-    QEventLoop loop;
+  QEventLoop loop;
 
-    connect (this,  SIGNAL (sig_pulse_server_terminated ()),
-             &loop, SLOT (quit ()));
+  connect (this,  SIGNAL (sig_pulse_server_terminated ()),
+           &loop, SLOT (quit ()));
 
-    pulse_server_->terminate ();
+  pulse_server_->terminate ();
 
-    loop.exec ();
+  loop.exec ();
 }
 
 int PulseManager::get_pulse_port () {
-    return (pulse_port_);
+  return (pulse_port_);
 }
 
 void PulseManager::set_pulse_port (int pulse_port) {
-    pulse_port_ = pulse_port;
+  pulse_port_ = pulse_port;
 }
 
 void PulseManager::relaunch () {
-    if (pulse_server_ && is_server_running ())
-        shutdown ();
+  if (pulse_server_ && is_server_running ())
+    shutdown ();
 
-    x2goDebug << "restarting pulse";
-    start ();
+  x2goDebug << "restarting pulse";
+  start ();
 }
 
 QProcess::ProcessState PulseManager::state () {
-    return (state_);
+  return (state_);
 }
 
 #ifdef DEBUG_UNDEF

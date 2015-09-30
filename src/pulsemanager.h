@@ -38,22 +38,21 @@
 #include "x2gologdebug.h"
 #include "x2gosettings.h"
 
-class PulseManager: public QObject
-{
-    Q_OBJECT;
+class PulseManager: public QObject {
+  Q_OBJECT;
 
-public:
+  public:
     PulseManager ();
     ~PulseManager ();
     int get_pulse_port ();
     void set_pulse_port (int pulse_port);
     QProcess::ProcessState state ();
 
-public slots:
+  public slots:
     void start ();
     void relaunch ();
 
-private:
+  private:
     PulseManager (const PulseManager &other);
     void start_osx ();
     // FIXME
@@ -67,14 +66,14 @@ private:
     void shutdown ();
     bool is_server_running ();
 
-private slots:
+  private slots:
     void on_pulse_finished (int exit_code);
     void slot_play_startup_sound ();
 
-signals:
+  signals:
     void sig_pulse_server_terminated ();
 
-private:
+  private:
     QString pulse_X2Go_;
     QDir pulse_dir_;
     QProcessEnvironment env_;
