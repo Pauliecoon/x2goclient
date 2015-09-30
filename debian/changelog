@@ -160,6 +160,9 @@ x2goclient (4.0.5.1-0x2go1) UNRELEASED; urgency=low
     - macbuild.sh: fix removal of base prefix in deduplication if base prefix
       ends in a slash.
     - macbuild.sh: copy "special" files, so that they can be removed later on.
+    - macbuild.sh: rewrite ID line detection algorithm. Modules don't seem to
+      be needing one, so skipping the first dependency line incidentally skips
+      a "real" dependency for modules.
 
   [ Oleksandr Shneyder ]
   * New upstream release (4.0.5.1):

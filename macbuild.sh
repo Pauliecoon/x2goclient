@@ -117,19 +117,26 @@ parse_otool_output() {
   typeset oldifs="${IFS}"
   IFS=''
 
-  # Used for skipping the first matching entry - which should typically be the ID line...
-  # That's a very naïve way to do this. Maybe there should be a bit more magic
-  # to catch this more reliably.
-  typeset -i first="1"
+  # Used for skipping the ID entry.
+  # Initialized to the empty string, but the first matching line will set it once.
+  # The ID filename is required for subsequent dependency discovery.
+  typeset id=""
 
   typeset line=""
   while read -r line; do
     if [[ "${line}" =~ ${tmp_regex} ]]; then
-      if [ "${first}" -ne "1" ]; then
+      typeset file="${BASH_REMATCH[1]}"
+
+      if [ -z "${id}" ]; then
+        echo "ID unset, something is wrong" >&2
+        return 1
+      elif [ "$(basename "${file}")" != "${id}" ]; then
         echo "${BASH_REMATCH[1]}"
       else
         first="0"
       fi
+    elif [ -z "${id}" ]; then
+      id="$(basename "${line%":"}")"
     fi
   done <<< "${raw_output}"
 
