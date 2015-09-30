@@ -39,7 +39,7 @@ PulseManager::PulseManager () {
 
     state_ = QProcess::NotRunning;
 
-    pulse_server_ = 0;
+    pulse_server_ = NULL;
 
     app_dir_ = QApplication::applicationDirPath ();
 }
@@ -115,7 +115,7 @@ void PulseManager::find_port () {
         if (tcpSocket.waitForConnected (1000)) {
             tcpSocket.close ();
             free = false;
-            pulse_port_++;
+            ++pulse_port_;
         }
         else
             free = true;
