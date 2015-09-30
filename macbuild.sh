@@ -377,7 +377,7 @@ if [ "${BUNDLE}" = "1" ]; then
 
   typeset -a top_files
   for entry in "${all_files[@]}"; do
-    typeset relative_path="${entry##"${base_dir}/"}"
+    typeset relative_path="${entry##"$(lazy_canonical_path "${base_dir}/")"}"
     typeset tmp_regex='^[^/]+$'
     echo "Checking ${relative_path} against regex '${tmp_regex}'"
     if [[ "${relative_path}" =~ ${tmp_regex} ]]; then
@@ -388,7 +388,7 @@ if [ "${BUNDLE}" = "1" ]; then
 
   typeset -a duplicates
   for entry in "${all_files[@]}"; do
-    typeset relative_path="${entry##"${base_dir}/"}"
+    typeset relative_path="${entry##"$(lazy_canonical_path "${base_dir}/")"}"
     typeset file_name="$(basename "${entry}")"
     typeset top_entry=""
     for top_entry in "${top_files[@]}"; do
@@ -430,7 +430,7 @@ if [ "${BUNDLE}" = "1" ]; then
     typeset -i i="0"
     for i in "${!all_files[@]}"; do
       typeset all_entry="${all_files[${i}]}"
-      typeset relative_path="${all_entry##"${base_dir}/"}"
+      typeset relative_path="${all_entry##"$(lazy_canonical_path "${base_dir}/")"}"
       if [ "${relative_path}" = "${entry}" ]; then
         unset all_files[${i}]
       fi
