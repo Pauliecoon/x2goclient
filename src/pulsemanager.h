@@ -75,13 +75,13 @@ signals:
     void sig_pulse_server_terminated ();
 
 private:
-    QString _pulse_X2Go;
-    QDir _pulse_dir;
-    QProcessEnvironment _env;
-    QProcess *_pulse_server;
-    int _pulse_port;
-    QProcess::ProcessState _state;
-    QString _app_dir;
+    QString pulse_X2Go_;
+    QDir pulse_dir_;
+    QProcessEnvironment env_;
+    QProcess *pulse_server_;
+    int pulse_port_;
+    QProcess::ProcessState state_;
+    QString app_dir_;
 };
 
 #ifdef NDEBUG_DEFINE

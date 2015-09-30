@@ -163,6 +163,8 @@ x2goclient (4.0.5.1-0x2go1) UNRELEASED; urgency=low
     - macbuild.sh: rewrite ID line detection algorithm. Modules don't seem to
       be needing one, so skipping the first dependency line incidentally skips
       a "real" dependency for modules.
+    - pulsemanager.{cpp,h}: use name and underscore for member variables, not
+      underscore and name.
 
   [ Oleksandr Shneyder ]
   * New upstream release (4.0.5.1):
