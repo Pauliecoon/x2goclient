@@ -167,6 +167,7 @@ x2goclient (4.0.5.1-0x2go1) UNRELEASED; urgency=low
       underscore and name.
     - pulsemanager.cpp: minor non-behavior changing fixes.
     - pulsemanager.{cpp,h}: reformat only.
+    - pulsemanager.cpp: use initializer list for constructor.
 
   [ Oleksandr Shneyder ]
   * New upstream release (4.0.5.1):
