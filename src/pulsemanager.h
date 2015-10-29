@@ -35,6 +35,7 @@
 #include <QApplication>
 #include <QTimer>
 #include <assert.h>
+#include <cstdint>
 #include "x2gologdebug.h"
 #include "x2gosettings.h"
 
@@ -44,8 +45,8 @@ class PulseManager: public QObject {
   public:
     PulseManager ();
     ~PulseManager ();
-    int get_pulse_port ();
-    void set_pulse_port (int pulse_port);
+    std::uint16_t get_pulse_port ();
+    void set_pulse_port (std::uint16_t pulse_port);
     QProcess::ProcessState state ();
 
   public slots:
@@ -78,7 +79,7 @@ class PulseManager: public QObject {
     QDir pulse_dir_;
     QProcessEnvironment env_;
     QProcess *pulse_server_;
-    int pulse_port_;
+    std::uint16_t pulse_port_;
     QProcess::ProcessState state_;
     QString app_dir_;
     uint32_t pulse_version_major_;

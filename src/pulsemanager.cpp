@@ -237,11 +237,11 @@ void PulseManager::shutdown () {
   loop.exec ();
 }
 
-int PulseManager::get_pulse_port () {
+std::uint16_t PulseManager::get_pulse_port () {
   return (pulse_port_);
 }
 
-void PulseManager::set_pulse_port (int pulse_port) {
+void PulseManager::set_pulse_port (std::uint16_t pulse_port) {
   pulse_port_ = pulse_port;
 }
 

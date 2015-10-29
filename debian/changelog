@@ -170,6 +170,7 @@ x2goclient (4.0.5.1-0x2go1) UNRELEASED; urgency=low
     - pulsemanager.cpp: use initializer list for constructor.
     - pulsemanager.{cpp,h}: add pulse_version_{major,minor}_ member variables.
     - pulsemanager.cpp: reformat only.
+    - pulsemanager.{cpp,h}: switch port definitions to std::uint16_t.
 
   [ Oleksandr Shneyder ]
   * New upstream release (4.0.5.1):
