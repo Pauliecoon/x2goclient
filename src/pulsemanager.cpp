@@ -25,8 +25,8 @@
 #endif
 
 PulseManager::PulseManager () : pulse_X2Go_ ("/.x2go/pulse"), pulse_port_ (4713),
-                                state_ (QProcess::NotRunning), pulse_server_ (NULL),
-                                app_dir_ (QApplication::applicationDirPath ()),
+                                esd_port_ (4714), state_ (QProcess::NotRunning),
+                                pulse_server_ (NULL), app_dir_ (QApplication::applicationDirPath ()),
                                 pulse_version_major_ (0), pulse_version_minor_ (0) {
   pulse_dir_ = QDir (QDir::homePath ());
   pulse_dir_.mkpath (pulse_dir_.absolutePath () + pulse_X2Go_ + "/tmp");
@@ -62,7 +62,15 @@ void PulseManager::start () {
 }
 
 void PulseManager::start_osx () {
-  find_port ();
+  // Search for a free Pulse and EsounD port.
+  // Note that there is no way we could find
+  // an esd port, if the pulse port detection
+  // failed. Better trust your compiler to
+  // optimize this statement and save some
+  // cycles.
+  if ((findPort (false)) && (findPort (true))) {
+    find_port ();
+  }
 
   if (generate_server_config () && generate_client_config ()) {
     cleanup_client_dir ();
@@ -98,21 +106,45 @@ void PulseManager::start_osx () {
   }
 }
 
-void PulseManager::find_port () {
+void PulseManager::find_port (bool search_esd) {
   QTcpSocket tcpSocket (0);
   bool free = false;
+  std::uint16_t ret = pulse_port_;
+  std::uint16_t other_port = esd_port_;
+
+  // If the search_esd parameter is true, find a free port
+  // for the PulseAudio emulation.
+  if (search_esd) {
+    ret = esd_port_;
+    other_port = pulse_port_;
+  }
 
   do {
-    tcpSocket.connectToHost ("127.0.0.1", pulse_port_);
+    // Skip this port, if it's reserved for the counterpart.
+    if (ret == other_port) {
+      ++ret;
+      continue;
+    }
+
+    tcpSocket.connectToHost ("127.0.0.1", ret);
 
     if (tcpSocket.waitForConnected (1000)) {
       tcpSocket.close ();
       free = false;
-      ++pulse_port_;
+      ++ret;
     }
     else
       free = true;
-  } while (!free);
+  } while ((!free) && (port > 1023));
+
+  if (!search_esd) {
+    pulse_port_ = ret;
+  }
+  else {
+    esd_port_ = ret;
+  }
+
+  return (free);
 }
 
 bool PulseManager::generate_server_config () {
@@ -131,6 +163,7 @@ bool PulseManager::generate_server_config () {
     config_tmp_file_stream << "load-module module-native-protocol-tcp port="
                             + QString::number (pulse_port_) << endl;
     config_tmp_file_stream << "load-module module-native-protocol-unix" << endl;
+    config_tmp_file_stream << "load-module module-esound-protocol-unix" << endl;
     config_tmp_file_stream << "load-module module-coreaudio-detect";
 
     if (disable_input)
@@ -241,8 +274,16 @@ std::uint16_t PulseManager::get_pulse_port () {
   return (pulse_port_);
 }
 
+std::uint16_t PulseManager::get_esd_port () {
+  return (esd_port_);
+}
+
 void PulseManager::set_pulse_port (std::uint16_t pulse_port) {
   pulse_port_ = pulse_port;
+}
+
+void PulseManager::set_esd_port (std::uint16_t esd_port) {
+  esd_port_ = esd_port;
 }
 
 void PulseManager::relaunch () {

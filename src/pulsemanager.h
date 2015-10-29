@@ -46,7 +46,9 @@ class PulseManager: public QObject {
     PulseManager ();
     ~PulseManager ();
     std::uint16_t get_pulse_port ();
+    std::uint16_t get_esd_port ();
     void set_pulse_port (std::uint16_t pulse_port);
+    void set_esd_port (std::uint16_t esd_port);
     QProcess::ProcessState state ();
 
   public slots:
@@ -60,7 +62,7 @@ class PulseManager: public QObject {
     void start_win ();
     // FIXME
     void start_linux ();
-    void find_port ();
+    void find_port (bool search_esd = false);
     bool generate_server_config ();
     bool generate_client_config ();
     void cleanup_client_dir ();
@@ -80,6 +82,7 @@ class PulseManager: public QObject {
     QProcessEnvironment env_;
     QProcess *pulse_server_;
     std::uint16_t pulse_port_;
+    std::uint16_t esd_port_;
     QProcess::ProcessState state_;
     QString app_dir_;
     std::uint32_t pulse_version_major_;
