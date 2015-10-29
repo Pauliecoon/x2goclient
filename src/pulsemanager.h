@@ -82,8 +82,8 @@ class PulseManager: public QObject {
     std::uint16_t pulse_port_;
     QProcess::ProcessState state_;
     QString app_dir_;
-    uint32_t pulse_version_major_;
-    uint32_t pulse_version_minor_;
+    std::uint32_t pulse_version_major_;
+    std::uint32_t pulse_version_minor_;
 };
 
 #ifdef NDEBUG_DEFINE
