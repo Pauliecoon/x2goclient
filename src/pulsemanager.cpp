@@ -24,10 +24,10 @@
 #define DEBUG
 #endif
 
-PulseManager::PulseManager () : pulse_X2Go_("/.x2go/pulse"), pulse_port_(4713),
-                                state_(QProcess::NotRunning), pulse_server_(NULL),
-                                app_dir_(QApplication::applicationDirPath ()),
-                                pulse_version_major_(0), pulse_version_minor_(0) {
+PulseManager::PulseManager () : pulse_X2Go_ ("/.x2go/pulse"), pulse_port_ (4713),
+                                state_ (QProcess::NotRunning), pulse_server_ (NULL),
+                                app_dir_ (QApplication::applicationDirPath ()),
+                                pulse_version_major_ (0), pulse_version_minor_ (0) {
   pulse_dir_ = QDir (QDir::homePath ());
   pulse_dir_.mkpath (pulse_dir_.absolutePath () + pulse_X2Go_ + "/tmp");
   pulse_dir_.cd (pulse_X2Go_.mid (1));
