@@ -292,6 +292,7 @@ void PulseManager::create_client_dir () {
 }
 
 void PulseManager::slot_play_startup_sound () {
+#ifdef DEBUG
   QProcess play_file (0);
 
   play_file.setWorkingDirectory (pulse_server_->workingDirectory ());
@@ -301,6 +302,7 @@ void PulseManager::slot_play_startup_sound () {
 
   if (play_file.waitForStarted ())
     play_file.waitForFinished ();
+#endif // defined (DEBUG)
 }
 
 void PulseManager::on_pulse_finished (int exit_code) {
