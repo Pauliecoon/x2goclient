@@ -188,6 +188,8 @@ x2goclient (4.0.5.1-0x2go1) UNRELEASED; urgency=low
     - pulsemanager.{cpp,h}: add new function start_generic () to split off
       common functionality.
     - pulsemanager.cpp: let start_osx () use start_generic ().
+    - pulsemanager.{cpp,h}: implement start_win () as part of Windows
+      functionality.
 
   [ Oleksandr Shneyder ]
   * New upstream release (4.0.5.1):

@@ -121,6 +121,27 @@ void PulseManager::start_osx () {
   }
 }
 
+void PulseManager::start_win () {
+  server_args_ = QStringList ();
+  server_args_ << "--exit-idle-time=-1" << "-n"
+               << "-F" << QDir::toNativeSeparators (QDir (pulse_dir_.absolutePath ()
+                                                          + "/config.pa").absolutePath ())
+               << "-p" << QDir::toNativeSeparators (QDir (app_dir_ + "/pulse/lib/pulse-1.1/"
+                                                          + "modules/").absolutePath ());
+#ifdef DEBUG
+  server_args_ << "--log-level=debug";
+#endif // defined (DEBUG)
+
+  server_working_dir_ = QString (app_dir_ + "/pulse/");
+  server_binary_ = QString (app_dir_ + "/pulse/pulseaudio.exe");
+
+  if (generateServerConfig () && generateClientConfig ()) {
+    create_client_dir ();
+
+    start_generic ();
+  }
+}
+
 void PulseManager::find_port (bool search_esd) {
   QTcpSocket tcpSocket (0);
   bool free = false;

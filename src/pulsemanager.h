@@ -58,7 +58,6 @@ class PulseManager: public QObject {
   private:
     PulseManager (const PulseManager &other);
     void start_osx ();
-    // FIXME
     void start_win ();
     // FIXME
     void start_linux ();
