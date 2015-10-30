@@ -236,20 +236,26 @@ bool PulseManager::generate_server_config () {
 bool PulseManager::generate_client_config () {
   QTemporaryFile client_config_tmp_file (pulse_dir_.absolutePath ()
                                          + "/tmp/tmpconfig");
-  QString client_config_file_name (pulse_dir_.absolutePath () + "/.pulse/client.conf");
+  QString client_config_file_name (pulse_dir_.absolutePath ()
+                                   + "/.pulse/client.conf");
   bool ret = false;
 
   if (client_config_tmp_file.open ()) {
     QTextStream config_tmp_file_stream (&client_config_tmp_file);
 
     config_tmp_file_stream << "autospawn=no" << endl;
+#ifdef Q_OS_WIN
+    config_tmp_file_stream << "default-server=localhost:" << pulse_port_ << endl;
+#endif // defined (Q_OS_WIN)
     config_tmp_file_stream << "daemon-binary="
-                           << QDir (app_dir_
-                                    + "/../exe/pulseaudio").absolutePath ()
+                           << QDir::toNativeSeparators (QDir (server_binary_).absolutePath ())
                            << endl;
 
     if (QFile::exists (client_config_file_name))
       QFile::remove (client_config_file_name);
+
+    QDir client_config_dir (pulse_dir_.absolutePath () + "/.pulse/");
+    client_config_dir.mkpath (client_config_dir.absolutePath ());
 
     client_config_tmp_file.copy (client_config_file_name);
     client_config_tmp_file.remove ();

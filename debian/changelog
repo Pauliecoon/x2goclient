@@ -192,6 +192,7 @@ x2goclient (4.0.5.1-0x2go1) UNRELEASED; urgency=low
       functionality.
     - pulsemanager.cpp: also load module-esound-protocol-tcp module.
     - pulsemanager.cpp: make generate_server_config () Windows-compatible.
+    - pulsemanager.cpp: make generate_client_config () Windows-compatible.
 
   [ Oleksandr Shneyder ]
   * New upstream release (4.0.5.1):
