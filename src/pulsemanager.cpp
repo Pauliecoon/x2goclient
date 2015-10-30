@@ -80,6 +80,25 @@ void PulseManager::start () {
   }
 }
 
+void PulseManager::start_generic () {
+  pulse_server_->setProcessEnvironment (env_);
+  pulse_server_->setWorkingDirectory (server_working_dir_);
+
+  pulse_server_->start (server_binary_, server_args_);
+  if (pulse_server_->waitForStarted ()) {
+    x2goDebug << "pulse started with arguments" << server_args_ << "; waiting for finish...";
+    state_ = QProcess::Running;
+
+    connect (pulse_server_, SIGNAL (finished (int)),
+             this,          SLOT (slot_on_pulse_finished (int)));
+
+#ifdef DEBUG
+    // Give PA a little time to come up.
+    QTimer::singleShot (3000, this, SLOT (slot_play_startup_sound ()));
+#endif // defined (DEBUG)
+  }
+}
+
 void PulseManager::start_osx () {
   if (generate_server_config () && generate_client_config ()) {
     cleanup_client_dir ();

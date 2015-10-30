@@ -62,6 +62,7 @@ class PulseManager: public QObject {
     void start_win ();
     // FIXME
     void start_linux ();
+    void start_generic ();
     void find_port (bool search_esd = false);
     bool generate_server_config ();
     bool generate_client_config ();
