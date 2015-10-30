@@ -264,6 +264,18 @@ void PulseManager::on_pulse_finished (int exit_code) {
   data = ba.data ();
   std::cout << data;
 
+  // Clean up
+  QDir work_dir (app_dir_);
+
+#ifdef Q_OS_WIN
+  work_dir.remove (pulse_dir_.absolutePath ()
+                   + "/pulse-pulseuser/pid");
+  work_dir.rmdir (pulse_dir_.absolutePath ()
+                  + "/pulse-pulseuser");
+#endif // defined (Q_OS_WIN)
+
+  work_dir.rmdir (pulse_dir_.absolutePath ());
+
   state_ = QProcess::NotRunning;
   emit (sig_pulse_server_terminated ());
 }
