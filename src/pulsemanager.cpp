@@ -198,14 +198,22 @@ bool PulseManager::generate_server_config () {
 
     config_tmp_file_stream << "load-module module-native-protocol-tcp port="
                             + QString::number (pulse_port_) << endl;
+
+#ifdef Q_OS_UNIX
     config_tmp_file_stream << "load-module module-native-protocol-unix" << endl;
     config_tmp_file_stream << "load-module module-esound-protocol-unix" << endl;
+#endif // defined(Q_OS_UNIX)
 
     config_tmp_file_stream << "load-module module-esound-protocol-tcp port="
                            << QString::number (esd_port_)
                            << endl;
 
+#ifdef Q_OS_DARWIN
     config_tmp_file_stream << "load-module module-coreaudio-detect";
+#elif defined (Q_OS_WIN)
+    config_tmp_file_stream << "load-module module-waveout";
+// FIXME Linux
+#endif // defined (Q_OS_DARWIN)
 
     if (disable_input)
       config_tmp_file_stream << " record=0";

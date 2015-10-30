@@ -191,6 +191,7 @@ x2goclient (4.0.5.1-0x2go1) UNRELEASED; urgency=low
     - pulsemanager.{cpp,h}: implement start_win () as part of Windows
       functionality.
     - pulsemanager.cpp: also load module-esound-protocol-tcp module.
+    - pulsemanager.cpp: make generate_server_config () Windows-compatible.
 
   [ Oleksandr Shneyder ]
   * New upstream release (4.0.5.1):
