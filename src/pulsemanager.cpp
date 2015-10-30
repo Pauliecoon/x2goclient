@@ -42,6 +42,10 @@ PulseManager::PulseManager () : pulse_X2Go_ ("/.x2go/pulse"),
   env_ = QProcessEnvironment::systemEnvironment ();
   env_.insert ("HOME", pulse_dir_.absolutePath ());
   env_.insert ("TEMP", pulse_dir_.absolutePath () + "/tmp");
+#ifdef Q_OS_WIN
+  env_.insert ("USERPROFILE", pulse_dir_.absolutePath ());
+  env_.insert ("USERNAME", "pulseuser");
+#endif // defined (Q_OS_WIN)
 }
 
 PulseManager::~PulseManager () {

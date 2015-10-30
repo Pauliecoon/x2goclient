@@ -184,6 +184,7 @@ x2goclient (4.0.5.1-0x2go1) UNRELEASED; urgency=low
     - pulsemanager.{cpp,h}: new function create_client_dir ().
     - pulsemanager.cpp: add Windows support to shutdown ().
     - pulsemanager.cpp: add cleanup support to on_pulse_finished ().
+    - pulsemanager.cpp: add Windows stuff to initial env in constructor.
 
   [ Oleksandr Shneyder ]
   * New upstream release (4.0.5.1):
