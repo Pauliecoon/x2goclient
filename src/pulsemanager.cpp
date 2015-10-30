@@ -230,6 +230,17 @@ void PulseManager::cleanup_client_dir () {
     machine_dir.remove (machine_dir.absolutePath ());
 }
 
+void PulseManager::create_client_dir () {
+  QDir machine_dir (pulse_dir_.absolutePath () + "/.pulse/"
+                    + QHostInfo::localHostName () + "-runtime");
+
+  if (!machine_dir.exists ())
+    machine_dir.mkpath (machine_dir.absolutePath ());
+
+  if (QFile::exists (machine_dir.absolutePath () + "/pid"))
+    QFile::remove (machine_dir.absolutePath () + "/pid");
+}
+
 void PulseManager::slot_play_startup_sound () {
   QProcess play_file (0);
 

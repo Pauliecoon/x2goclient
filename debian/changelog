@@ -181,6 +181,7 @@ x2goclient (4.0.5.1-0x2go1) UNRELEASED; urgency=low
       server_working_dir_ class variables.
     - pulsemanager.cpp: make start () wrap the "real" OS-specific start
       functions.
+    - pulsemanager.{cpp,h}: new function create_client_dir ().
 
   [ Oleksandr Shneyder ]
   * New upstream release (4.0.5.1):

@@ -66,6 +66,7 @@ class PulseManager: public QObject {
     bool generate_server_config ();
     bool generate_client_config ();
     void cleanup_client_dir ();
+    void create_client_dir ();
     void shutdown ();
     bool is_server_running ();
 
