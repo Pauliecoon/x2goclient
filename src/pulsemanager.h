@@ -85,6 +85,9 @@ class PulseManager: public QObject {
     std::uint16_t esd_port_;
     QProcess::ProcessState state_;
     QString app_dir_;
+    QStringList server_args_;
+    QString server_binary_;
+    QString server_working_dir_;
     std::uint32_t pulse_version_major_;
     std::uint32_t pulse_version_minor_;
 };
