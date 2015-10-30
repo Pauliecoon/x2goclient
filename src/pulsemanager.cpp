@@ -100,37 +100,24 @@ void PulseManager::start_generic () {
 }
 
 void PulseManager::start_osx () {
+  server_args_ = QStringList ();
+  server_args_ << "--exit-idle-time=-1" << "-n"
+               << "-F" << pulse_dir_.absolutePath () + "/config.pa"
+               << "-p"
+               << QDir (app_dir_
+                        + "/../Frameworks/pulse-2.0/modules").absolutePath ()
+               << "--high-priority";
+#ifdef DEBUG
+  server_args_ << "--log-level=debug";
+#endif // defined (DEBUG)
+
+  server_working_dir_ = QString (app_dir_ + "/../exe/");
+  server_binary_ = QString (server_working_dir_ + "/pulseaudio");
+
   if (generate_server_config () && generate_client_config ()) {
     cleanup_client_dir ();
 
-    pulse_server_->setProcessEnvironment (env_);
-
-    QStringList args;
-    args << "--exit-idle-time=-1" << "-n"
-         << "-F" << pulse_dir_.absolutePath () + "/config.pa"
-         << "-p"
-         << QDir (app_dir_
-                  + "/../Frameworks/pulse-2.0/modules").absolutePath ()
-         << "--high-priority";
-#ifdef DEBUG
-    args << "--log-level=debug";
-#endif
-
-    pulse_server_->setWorkingDirectory (app_dir_ + "/../exe/");
-    pulse_server_->start (app_dir_ + "/../exe/pulseaudio", args);
-
-    if (pulse_server_->waitForStarted ()) {
-      x2goDebug << "pulse started with" << args << "waiting for finish...";
-      state_ = QProcess::Running;
-
-      connect (pulse_server_, SIGNAL (finished (int)),
-               this,          SLOT (on_pulse_finished (int)));
-
-#ifdef DEBUG
-      // Give PA a little time to come up.
-      QTimer::singleShot (5000, this, SLOT (slot_play_startup_sound ()));
-#endif // defined (DEBUG)
-    }
+    start_generic ();
   }
 }
 

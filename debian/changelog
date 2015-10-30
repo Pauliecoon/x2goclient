@@ -187,6 +187,7 @@ x2goclient (4.0.5.1-0x2go1) UNRELEASED; urgency=low
     - pulsemanager.cpp: add Windows stuff to initial env in constructor.
     - pulsemanager.{cpp,h}: add new function start_generic () to split off
       common functionality.
+    - pulsemanager.cpp: let start_osx () use start_generic ().
 
   [ Oleksandr Shneyder ]
   * New upstream release (4.0.5.1):
