@@ -281,7 +281,14 @@ void PulseManager::shutdown () {
   connect (this,  SIGNAL (sig_pulse_server_terminated ()),
            &loop, SLOT (quit ()));
 
+  // Console applications without an event loop can only be terminated
+  // by QProcess::kill() on Windows (unless they handle WM_CLOSE, which
+  // PA obviously doesn't.)
+#ifdef Q_OS_WIN
+  pulse_server_->kill ();
+#else // defined (Q_OS_WIN)
   pulse_server_->terminate ();
+#endif // defined (Q_OS_WIN)
 
   loop.exec ();
 }

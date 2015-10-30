@@ -182,6 +182,7 @@ x2goclient (4.0.5.1-0x2go1) UNRELEASED; urgency=low
     - pulsemanager.cpp: make start () wrap the "real" OS-specific start
       functions.
     - pulsemanager.{cpp,h}: new function create_client_dir ().
+    - pulsemanager.cpp: add Windows support to shutdown ().
 
   [ Oleksandr Shneyder ]
   * New upstream release (4.0.5.1):
