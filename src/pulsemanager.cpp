@@ -59,16 +59,6 @@ void PulseManager::start () {
   pulse_server_ = new QProcess (0);
   state_ = QProcess::Starting;
 
-#ifdef Q_OS_DARWIN
-  start_osx ();
-#elif defined (Q_OS_WIN)
-  start_win ();
-#elif defined (Q_OS_LINUX)
-  start_linux ();
-#endif // defined (Q_OS_DARWIN)
-}
-
-void PulseManager::start_osx () {
   // Search for a free Pulse and EsounD port.
   // Note that there is no way we could find
   // an esd port, if the pulse port detection
@@ -76,9 +66,17 @@ void PulseManager::start_osx () {
   // optimize this statement and save some
   // cycles.
   if ((findPort (false)) && (findPort (true))) {
-    find_port ();
+#ifdef Q_OS_DARWIN
+    start_osx ();
+#elif defined (Q_OS_WIN)
+    start_win ();
+#elif defined (Q_OS_LINUX)
+    start_linux ();
+#endif // defined (Q_OS_DARWIN)
   }
+}
 
+void PulseManager::start_osx () {
   if (generate_server_config () && generate_client_config ()) {
     cleanup_client_dir ();
 

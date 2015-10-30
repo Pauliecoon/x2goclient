@@ -179,6 +179,8 @@ x2goclient (4.0.5.1-0x2go1) UNRELEASED; urgency=low
     - pulsemanager.{cpp,h}: fixup preprocessor usage.
     - pulsemanager.{cpp,h}: add server_args_, server_binary_ and
       server_working_dir_ class variables.
+    - pulsemanager.cpp: make start () wrap the "real" OS-specific start
+      functions.
 
   [ Oleksandr Shneyder ]
   * New upstream release (4.0.5.1):
