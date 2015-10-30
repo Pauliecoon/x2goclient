@@ -200,6 +200,11 @@ bool PulseManager::generate_server_config () {
                             + QString::number (pulse_port_) << endl;
     config_tmp_file_stream << "load-module module-native-protocol-unix" << endl;
     config_tmp_file_stream << "load-module module-esound-protocol-unix" << endl;
+
+    config_tmp_file_stream << "load-module module-esound-protocol-tcp port="
+                           << QString::number (esd_port_)
+                           << endl;
+
     config_tmp_file_stream << "load-module module-coreaudio-detect";
 
     if (disable_input)

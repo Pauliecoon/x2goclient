@@ -190,6 +190,7 @@ x2goclient (4.0.5.1-0x2go1) UNRELEASED; urgency=low
     - pulsemanager.cpp: let start_osx () use start_generic ().
     - pulsemanager.{cpp,h}: implement start_win () as part of Windows
       functionality.
+    - pulsemanager.cpp: also load module-esound-protocol-tcp module.
 
   [ Oleksandr Shneyder ]
   * New upstream release (4.0.5.1):
