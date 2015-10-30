@@ -286,7 +286,7 @@ void PulseManager::set_esd_port (std::uint16_t esd_port) {
   esd_port_ = esd_port;
 }
 
-void PulseManager::relaunch () {
+void PulseManager::restart () {
   if (pulse_server_ && is_server_running ())
     shutdown ();
 

@@ -53,7 +53,7 @@ class PulseManager: public QObject {
 
   public slots:
     void start ();
-    void relaunch ();
+    void restart ();
 
   private:
     PulseManager (const PulseManager &other);
