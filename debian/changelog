@@ -194,6 +194,8 @@ x2goclient (4.0.5.1-0x2go1) UNRELEASED; urgency=low
     - pulsemanager.cpp: make generate_server_config () Windows-compatible.
     - pulsemanager.cpp: make generate_client_config () Windows-compatible.
     - pulsemanager.cpp: only play startup sound if DEBUG macro is defined.
+    - pulsemanager.cpp: make startup sound playing via
+      slot_play_startup_sound () Windows-compatible.
 
   [ Oleksandr Shneyder ]
   * New upstream release (4.0.5.1):

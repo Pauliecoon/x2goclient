@@ -294,11 +294,22 @@ void PulseManager::create_client_dir () {
 void PulseManager::slot_play_startup_sound () {
 #ifdef DEBUG
   QProcess play_file (0);
+  QString play_file_binary = QString (app_dir_);
+  QString play_file_file = play_file_binary;
 
-  play_file.setWorkingDirectory (pulse_server_->workingDirectory ());
+#ifdef Q_OS_DARWIN
+  play_file_binary += "/../exe/paplay";
+  play_file_file += "/../Resources/startup.wav";
+#elif defined (Q_OS_WIN)
+  playFileBinary += "/pulse/paplay.exe";
+  playFileFile += "/startup.wav";
+#endif // defined (Q_OS_DARWIN)
+
+  QStringList args;
+  args << play_file_file;
+  play_file.setWorkingDirectory (server_working_dir_);
   play_file.setProcessEnvironment (env_);
-  play_file.start (app_dir_ + "/../exe/paplay "
-                   + app_dir_ + "/../Resources/startup.wav");
+  play_file.start (play_file_binary, args);
 
   if (play_file.waitForStarted ())
     play_file.waitForFinished ();
