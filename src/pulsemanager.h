@@ -23,7 +23,7 @@
 #ifdef NDEBUG
 #define NDEBUG_DEFINE
 #undef NDEBUG
-#endif
+#endif // defined (NDEBUG)
 
 #include <iostream>
 #include <QDir>
@@ -92,6 +92,6 @@ class PulseManager: public QObject {
 #ifdef NDEBUG_DEFINE
 #define NDEBUG
 #undef NDEBUG_DEFINE
-#endif
+#endif // defined (NDEBUG_DEFINE)
 
 #endif // PULSEMANAGER_H

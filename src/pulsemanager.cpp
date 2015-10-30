@@ -22,7 +22,7 @@
 #ifndef DEBUG
 #define DEBUG_UNDEF
 #define DEBUG
-#endif
+#endif // defined (NDEBUG)
 
 PulseManager::PulseManager () : pulse_X2Go_ ("/.x2go/pulse"),
                                 pulse_port_ (4713),
@@ -62,7 +62,7 @@ void PulseManager::start () {
   start_win ();
 #elif defined (Q_OS_LINUX)
   start_linux ();
-#endif
+#endif // defined (Q_OS_DARWIN)
 }
 
 void PulseManager::start_osx () {
@@ -105,7 +105,7 @@ void PulseManager::start_osx () {
 #ifdef DEBUG
       // Give PA a little time to come up.
       QTimer::singleShot (5000, this, SLOT (slot_play_startup_sound ()));
-#endif
+#endif // defined (DEBUG)
     }
   }
 }
@@ -305,4 +305,4 @@ QProcess::ProcessState PulseManager::state () {
 #ifdef DEBUG_UNDEF
 #undef DEBUG
 #undef DEBUG_UNDEF
-#endif
+#endif // defined (DEBUG_UNDEF)
